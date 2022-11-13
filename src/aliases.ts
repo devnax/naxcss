@@ -1,6 +1,5 @@
 import { AliasFN, AliasesPops } from './types'
 
-
 const isStr = (v: any, or: any) => typeof v === 'string' ? v : or
 
 const aliases: { [key in keyof AliasesPops]: string | AliasFN } = {

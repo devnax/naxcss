@@ -66,7 +66,15 @@ export type Keyframes = {
 } & string
 
 export type AliasFN = (v: any, k: string) => Partial<CSSObject>;
-
+export type getAlisesProps = AliasesPops | { [key: string]: any }
 export interface OptionsProps {
-   invalids: () => void;
+   invalids?: (props: { [key: string]: any }) => void;
+   getAliases?: (aliases: getAlisesProps) => getAlisesProps
+}
+
+
+
+export interface CACHE_PROPS {
+   id: string;
+   invalids: { [key: string]: any }
 }
