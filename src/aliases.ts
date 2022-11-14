@@ -5,6 +5,9 @@ const isStr = (v: any, or: any) => typeof v === 'string' ? v : or
 const aliases: { [key in keyof AliasesPops]: string | AliasFN } = {
    bgColor: "background-color",
    bgImage: (v) => ({ backgroundImage: `url(${v})` }),
+   bgSize: 'background-size',
+   bgPosition: 'background-position',
+   bgRepeat: 'background-repeat',
    bg: 'bakground',
    p: "padding",
    pt: "padding-top",

@@ -31,6 +31,9 @@ export interface CSSOthersObject {
 export interface AliasesPops {
    bgColor: string;
    bgImage: string;
+   bgSize: CSS.Properties['backgroundSize'],
+   bgPosition: CSS.Properties['backgroundPosition'],
+   bgRepeat: CSS.Properties['backgroundRepeat'],
    bg: string;
    p: number | string;
    pt: number | string;
