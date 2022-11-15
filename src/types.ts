@@ -74,7 +74,7 @@ export interface OptionsProps {
    getProp?: (key: string, value: string) => boolean;
    getAliases?: (aliases: getAlisesProps) => getAlisesProps;
    classPrefix?: string;
-   breakpoints: { [key: string]: number }
+   breakpoints?: { [key: string]: number }
 }
 
 

@@ -27,7 +27,7 @@ const hasBreakpoint = (value: { [k: string]: any }, options?: OptionsProps) => {
 
 
 const createBreakpoint = (prop: string, value: { [k: string]: any }, factory: Factory) => {
-	const options = factory.options as OptionsProps
+	const options = factory.options as Required<OptionsProps>
 	prop = formatePropName(prop)
 	for (let bname in value) {
 		const bnum = options.breakpoints[bname]
@@ -79,7 +79,7 @@ const css_process = (_css: Partial<CSSObject>, factory?: Factory, options?: Opti
 
 	for (let prop in _css) {
 		const val: any = _css[prop]
-		if (!(options?.getProp && options?.getProp(prop, val))) {
+		if ((options?.getProp && options?.getProp(prop, val)) === false) {
 			continue;
 		}
 
