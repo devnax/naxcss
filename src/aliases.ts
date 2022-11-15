@@ -3,11 +3,11 @@ import { AliasFN, AliasesPops } from './types'
 const isStr = (v: any, or: any) => typeof v === 'string' ? v : or
 
 const aliases: { [key in keyof AliasesPops]: string | AliasFN } = {
-   bgColor: "background-color",
-   bgImage: (v) => ({ backgroundImage: `url(${v})` }),
-   bgSize: 'background-size',
-   bgPosition: 'background-position',
-   bgRepeat: 'background-repeat',
+   bgcolor: "background-color",
+   bgimage: (v) => ({ backgroundImage: `url(${v})` }),
+   bgsize: 'background-size',
+   bgposition: 'background-position',
+   bgrepeat: 'background-repeat',
    bg: 'bakground',
    p: "padding",
    pt: "padding-top",
@@ -26,8 +26,6 @@ const aliases: { [key in keyof AliasesPops]: string | AliasFN } = {
    size: (v) => ({ width: isStr(v, 8 * v), height: isStr(v, 8 * v) }),
    radius: (v) => ({ borderRadius: isStr(v, 8 * v) }),
    shadow: "box-shadow",
-   gradientL: (v) => ({ background: `linear-gradient(${v})` }),
-   gradientR: (v) => ({ background: `radial-gradient(${v})` })
 };
 
 export default aliases
