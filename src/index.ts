@@ -1,11 +1,11 @@
 import aliases from './aliases'
 import Factory from './Factory';
-import { CSSObject } from './types'
+import { CSSObject, CSSValueType } from './types'
 import { OptionsProps } from './types'
 export * from './types'
 const isObject = (v: any) => typeof v === "object" && !Array.isArray(v);
 const uid = () => Math.random().toString(36).substring(2, 8);
-const CACHE = new Map<string, Factory>();
+const CACHE = new Map<string, Factory<any>>();
 
 const formatePropName = (name: string) =>
 	name
@@ -21,13 +21,13 @@ const val_formate = (val: any, key: string) => {
 	return val
 }
 
-const hasBreakpoint = (value: { [k: string]: any }, options?: OptionsProps) => {
+const hasBreakpoint = <Value>(value: { [k: string]: any }, options?: OptionsProps<Value>) => {
 	return options?.breakpoints && Object.keys(options.breakpoints).includes(Object.keys(value)[0])
 }
 
 
-const createBreakpoint = (prop: string, value: { [k: string]: any }, factory: Factory) => {
-	const options = factory.options as Required<OptionsProps>
+const createBreakpoint = <Value, Alias>(prop: string, value: { [k: string]: any }, factory: Factory<Value, Alias>) => {
+	const options = factory.options as Required<OptionsProps<Value>>
 	prop = formatePropName(prop)
 	for (let bname in value) {
 		const bnum = options.breakpoints[bname]
@@ -39,7 +39,7 @@ const createBreakpoint = (prop: string, value: { [k: string]: any }, factory: Fa
 
 }
 
-const make_css = (key: string, val: string | number, factory: Factory) => {
+const make_css = <Value, Alias>(key: string, val: string | number, factory: Factory<Value, Alias>) => {
 	const options = factory.options
 	const _aliases: any = (options?.getAliases && options?.getAliases(aliases)) || aliases
 	let alias = _aliases[key]
@@ -61,47 +61,49 @@ const make_css = (key: string, val: string | number, factory: Factory) => {
 }
 
 
-const css_process = (_css: Partial<CSSObject>, factory?: Factory, options?: OptionsProps) => {
+const css_process = <Value, Alias>(_css: Partial<CSSObject<Value, Alias>>, factory?: Factory<Value, Alias>, options?: OptionsProps<Value>) => {
 	if (!factory) {
 		const cache_key = JSON.stringify(_css)
 		let hasFactory = CACHE.get(cache_key)
 		if (hasFactory) {
 			return hasFactory
 		}
-		factory = new Factory
+		factory = new Factory<Value, Alias>()
 		factory.id = (options?.classPrefix || "css-") + uid()
 		factory.current_cls = factory.id
-		factory.options = options as OptionsProps
+		factory.options = options as OptionsProps<Value>
 		CACHE.set(cache_key, factory)
 	}
 
-	factory = factory as Factory
+	factory = factory as Factory<Value, Alias>
 
 	for (let prop in _css) {
-		const val: any = _css[prop]
+		const val: any = (_css as any)[prop]
 		if ((options?.getProp && options?.getProp(prop, val)) === false) {
 			continue;
 		}
 
 		if (isObject(val)) {
-			if (hasBreakpoint(val, options)) {
-				createBreakpoint(prop, val, factory)
+			if (hasBreakpoint<Value>(val, options)) {
+				createBreakpoint<Value, Alias>(prop, val, factory)
 			} else {
 				factory.current_cls = prop.replace("&", factory.current_cls)
-				css_process(val, factory, options)
+				css_process<Value, Alias>(val, factory, options)
 			}
 		} else {
-			factory.setCSS(make_css(prop, val, factory))
+			factory.setCSS(make_css<Value, Alias>(prop, val, factory))
 		}
 	}
 
 	return factory
 }
 
-export const css = (_css: CSSObject, options?: OptionsProps) => {
-	const factory = css_process(_css, undefined, options)
+
+export const css = <Value = {}, Alias = { [key: string]: CSSValueType<Value> | any }>(_css: CSSObject<Value, Alias>, options?: OptionsProps<Value>) => {
+	const factory = css_process<Value, Alias>(_css, undefined, options)
 	if (!factory.generated) {
 		factory.generate()
+		options?.getFactory && options.getFactory(factory)
 	}
 	return factory.id
 }

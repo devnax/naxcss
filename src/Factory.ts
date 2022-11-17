@@ -1,11 +1,11 @@
 import { PropMediaType, CSSStack, OptionsProps } from "./types";
 
-class Factory {
+class Factory<Value = any, Alias = any> {
    id: string = '';
    current_cls: string = '';
-   medias: PropMediaType = {}
-   css: CSSStack = {}
-   options: Partial<OptionsProps> = {}
+   medias: PropMediaType<Value, Alias> = {}
+   css: CSSStack<Value, Alias> = {}
+   options: Partial<OptionsProps<Value>> = {}
    generated = false
 
    setCSS(_css: { [k: string]: string }) {
