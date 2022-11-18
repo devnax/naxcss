@@ -7,15 +7,12 @@ const isObject = (v: any) => typeof v === "object" && !Array.isArray(v);
 const uid = () => Math.random().toString(36).substring(2, 8);
 const CACHE = new Map<string, Factory<any>>();
 
-const formatePropName = (name: string) =>
-	name
-		.split(/(?=[A-Z])/)
-		.join("-")
-		.toLowerCase();
+const formatePropName = (name: string) => name.split(/(?=[A-Z])/).join("-").toLowerCase();
 
 
+const numval_keys = ["font-weight", "line-height", "opacity", "z-index", "flex", "order"]
 const val_formate = (val: any, key: string) => {
-	if (!isNaN(val) && !(key === "font-weight" || key === "line-height")) {
+	if (typeof val === 'number' && !numval_keys.includes(key)) {
 		val = `${val}px`;
 	}
 	return val

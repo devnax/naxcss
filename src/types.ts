@@ -33,11 +33,11 @@ export type CSSOthersObject<Value, Alias> = {
 }
 
 export type AliasesProps<Value> = {
-   bgcolor?: CSSValueType<Value> | CSS.Properties['background'];
-   bgimage?: CSSValueType<Value> | CSS.Properties['backgroundImage'];
-   bgsize?: CSSValueType<Value> | CSS.Properties['backgroundSize'],
-   bgposition?: CSSValueType<Value> | CSS.Properties['backgroundPosition'],
-   bgrepeat?: CSSValueType<Value> | CSS.Properties['backgroundRepeat'],
+   bgColor?: CSSValueType<Value> | CSS.Properties['background'];
+   bgImage?: CSSValueType<Value> | CSS.Properties['backgroundImage'];
+   bgSize?: CSSValueType<Value> | CSS.Properties['backgroundSize'],
+   bgPosition?: CSSValueType<Value> | CSS.Properties['backgroundPosition'],
+   bgRepeat?: CSSValueType<Value> | CSS.Properties['backgroundRepeat'],
    bg?: CSSValueType<Value> | CSS.Properties['background'];
    p?: CSSValueType<Value> | CSS.Properties['padding'];
    pt?: CSSValueType<Value> | CSS.Properties['padding'];

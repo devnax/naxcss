@@ -3,11 +3,11 @@ import { AliasFN, AliasesProps } from './types'
 const isStr = (v: any, or: any) => typeof v === 'string' ? v : or
 
 const aliases: { [key in keyof AliasesProps<any>]: string | AliasFN } = {
-   bgcolor: "background-color",
-   bgimage: (v) => ({ backgroundImage: `url(${v})` }),
-   bgsize: 'background-size',
-   bgposition: 'background-position',
-   bgrepeat: 'background-repeat',
+   bgColor: "background-color",
+   bgImage: (v) => ({ backgroundImage: `url(${v})` }),
+   bgSize: 'background-size',
+   bgPosition: 'background-position',
+   bgRepeat: 'background-repeat',
    bg: 'background',
    p: (v) => ({ paddingTop: isStr(v, 8 * v), paddingRight: isStr(v, 8 * v), paddingBottom: isStr(v, 8 * v), paddingLeft: isStr(v, 8 * v) }),
    pt: (v) => ({ paddingTop: isStr(v, 8 * v) }),
