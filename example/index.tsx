@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { css } from '../src'
+import { css } from '../src/css'
 // import { css } from '@emotion/css'
 
 const parformance = () => {
@@ -75,53 +75,47 @@ const parformance = () => {
 const App = () => {
 
 
-	css({
-		border: 1,
-		bgcolor: "red",
-		"& div": {
-			width: 100,
-			'& p': {
-				color: "red",
-				textAlign: "center",
-				'& span': {
-					fontWeight: 500,
-					'& b': {
-						color: "#000"
-					}
-				}
-			}
-		}
-	})
 
 
-	const className = css({
+	const _css = {
 		width: {
-			sm: 300,
-			xs: 100,
+			xs: 200,
+			md: 400
 		},
-		height: 100,
+		height: 200,
 		bgcolor: {
-			xs: "red",
-			sm: "green",
-			md: "yellow",
-			lg: "blue"
-		}
-	}, {
-		classPrefix: "nax-",
-		getProp: (key) => {
-			if (key === "id") {
-				return false
-			}
-			return true
+			md: "red",
+			sm: "yellow",
+			lg: "green",
+
 		},
-		breakpoints: {
-			xs: 0,
-			sm: 500,
-			md: 700,
-			lg: 900,
-			xl: 1024
+		lineHeight: 20,
+		'& div': {
+			width: 100,
+			height: {
+				lg: 500
+			}
 		}
-	})
+	}
+
+	const _options = {
+		breakpoints: {
+			sm: 700,
+			md: 900,
+			lg: 1190,
+			xs: 500,
+
+		}
+	}
+
+	css(_css, _options)
+	css(_css, _options)
+	css(_css, _options)
+	css(_css, _options)
+	css(_css, _options)
+
+	const className = css(_css, _options)
+	// const className = css()
 
 	return (
 		<div className={className}>

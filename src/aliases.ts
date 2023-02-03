@@ -2,13 +2,11 @@ import { AliasFN, AliasesProps } from './types'
 
 const isStr = (v: any, or: any) => typeof v === 'string' ? v : or
 
-const aliases: { [key in keyof AliasesProps<any>]: string | AliasFN } = {
-   bgColor: "background-color",
+const aliases: { [key in keyof AliasesProps<any>]: AliasFN } = {
+   bgColor: (v) => ({ "background-color": v }),
+   bgcolor: (v) => ({ "background-color": v }),
    bgImage: (v) => ({ backgroundImage: `url(${v})` }),
-   bgSize: 'background-size',
-   bgPosition: 'background-position',
-   bgRepeat: 'background-repeat',
-   bg: 'background',
+   bg: (v) => ({ 'background': v }),
    p: (v) => ({ paddingTop: isStr(v, 8 * v), paddingRight: isStr(v, 8 * v), paddingBottom: isStr(v, 8 * v), paddingLeft: isStr(v, 8 * v) }),
    pt: (v) => ({ paddingTop: isStr(v, 8 * v) }),
    pr: (v) => ({ paddingRight: isStr(v, 8 * v) }),
@@ -25,20 +23,20 @@ const aliases: { [key in keyof AliasesProps<any>]: string | AliasFN } = {
    my: (v) => ({ marginTop: isStr(v, 8 * v), marginBottom: isStr(v, 8 * v) }),
    size: (v) => ({ width: isStr(v, 8 * v), height: isStr(v, 8 * v) }),
    radius: (v) => ({ borderRadius: isStr(v, 8 * v) }),
-   shadow: "box-shadow",
+   shadow: (v) => ({ "box-shadow": v }),
 
-   w: "width",
-   h: "height",
-   maxw: "max-width",
-   minw: "min-width",
-   maxh: "max-height",
-   minh: "min-height",
+   w: (v) => ({ "width": v }),
+   h: (v) => ({ "height": v }),
+   maxw: (v) => ({ "max-width": v }),
+   minw: (v) => ({ "min-width": v }),
+   maxh: (v) => ({ "max-height": v }),
+   minh: (v) => ({ "min-height": v }),
 
    flexBox: () => ({ display: "flex" }),
    flexRow: () => ({ flexDirection: "row" }),
    flexColumn: () => ({ flexDirection: "column" }),
    flexWraped: () => ({ flexWrap: "wrap" }),
-   direction: "flexDirection",
+   direction: v => ({ "flexDirection": v }),
    justifyStart: () => ({ justifyContent: "flex-start" }),
    justifyEnd: () => ({ justifyContent: "flex-end" }),
    justifyCenter: () => ({ justifyContent: "center" }),

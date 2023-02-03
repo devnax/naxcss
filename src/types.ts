@@ -34,6 +34,7 @@ export type CSSOthersObject<Value, Alias> = {
 
 export type AliasesProps<Value> = {
    bgColor?: CSSValueType<Value> | CSS.Properties['background'];
+   bgcolor?: CSSValueType<Value> | CSS.Properties['background'];
    bgImage?: CSSValueType<Value> | CSS.Properties['backgroundImage'];
    bgSize?: CSSValueType<Value> | CSS.Properties['backgroundSize'],
    bgPosition?: CSSValueType<Value> | CSS.Properties['backgroundPosition'],
