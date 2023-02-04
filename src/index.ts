@@ -1,106 +1,101 @@
-import aliases from './aliases'
-import Factory from './Factory';
-import { CSSObject, CSSValueType } from './types'
-import { OptionsProps } from './types'
-export * from './types'
-const isObject = (v: any) => typeof v === "object" && !Array.isArray(v);
+import defaultAliases from './aliases'
+import { CSSProps, OptionsProps } from './types';
+
+const CACHE = new Map<string, string>();
 const uid = () => Math.random().toString(36).substring(2, 8);
-const CACHE = new Map<string, Factory<any>>();
-
-const formatePropName = (name: string) => name.split(/(?=[A-Z])/).join("-").toLowerCase();
-
-
-const numval_keys = ["font-weight", "line-height", "opacity", "z-index", "flex", "order"]
-const val_formate = (val: any, key: string) => {
-	if (typeof val === 'number' && !numval_keys.includes(key)) {
-		val = `${val}px`;
-	}
-	return val
+const isObject = (v: any) => typeof v === "object" && !Array.isArray(v);
+const number_val_props = ["fontWeight", "lineHeight", "opacity", "zIndex", "flex", "order"]
+const formatPropName = (name: string) => name.split(/(?=[A-Z])/).join("-").toLowerCase();
+const formatValue = (val: any, key: string) => {
+	return typeof val === 'number' && !number_val_props.includes(key) ? `${val}px` : val
 }
 
-const hasBreakpoint = <Value>(value: { [k: string]: any }, options?: OptionsProps<Value>) => {
-	return options?.breakpoints && Object.keys(options.breakpoints).includes(Object.keys(value)[0])
-}
+export const generateCss = (_css: any, baseClass: string, _aliases = defaultAliases, options?: OptionsProps) => {
+	let stack: any = []
+	let main_css: any = ''
 
-
-const createBreakpoint = <Value, Alias>(prop: string, value: { [k: string]: any }, factory: Factory<Value, Alias>) => {
-	const options = factory.options as Required<OptionsProps<Value>>
-	prop = formatePropName(prop)
-	for (let bname in value) {
-		const bnum = options.breakpoints[bname]
-		if (bnum !== undefined) {
-			let bval = val_formate(value[bname], prop)
-			factory.setMedia(bnum, make_css(prop, bval, factory))
-		}
-	}
-
-}
-
-const make_css = <Value, Alias>(key: string, val: string | number, factory: Factory<Value, Alias>) => {
-	const options = factory.options
-	const _aliases: any = (options?.getAliases && options?.getAliases(aliases)) || aliases
-	let alias = _aliases[key]
-	let f: any = {}
-	if (typeof alias === "function") {
-		const alisa_ob = alias(val, key)
-		for (let askey in alisa_ob) {
-			let asval = (alisa_ob as any)[askey]
-			askey = formatePropName(askey)
-			asval = val_formate(asval, askey)
-			f[askey] = `${askey}: ${asval}`
-		}
-	} else {
-		key = formatePropName(alias || key)
-		val = val_formate(val, key)
-		f[key] = `${key}: ${val}`
-	}
-	return f
-}
-
-
-const css_process = <Value, Alias>(_css: Partial<CSSObject<Value, Alias>>, factory?: Factory<Value, Alias>, options?: OptionsProps<Value>) => {
-	if (!factory) {
-		const cache_key = JSON.stringify(_css)
-		let hasFactory = CACHE.get(cache_key)
-		if (hasFactory) {
-			return hasFactory
-		}
-		factory = new Factory<Value, Alias>()
-		factory.id = (options?.classPrefix || "css-") + uid()
-		factory.current_cls = factory.id
-		factory.options = options as OptionsProps<Value>
-		CACHE.set(cache_key, factory)
-	}
-
-	factory = factory as Factory<Value, Alias>
-
-	for (let prop in _css) {
-		const val: any = (_css as any)[prop]
-		if ((options?.getProp && options?.getProp(prop, val)) === false) {
-			continue;
-		}
-
-		if (isObject(val)) {
-			if (hasBreakpoint<Value>(val, options)) {
-				createBreakpoint<Value, Alias>(prop, val, factory)
-			} else {
-				factory.current_cls = prop.replace("&", factory.current_cls)
-				css_process<Value, Alias>(val, factory, options)
-			}
+	for (let key in _css) {
+		const cssval = (_css as any)[key]
+		if (key.startsWith("&")) {
+			stack = [
+				...stack,
+				...generateCss(cssval, key.replace('&', baseClass), _aliases, options)
+			]
 		} else {
-			factory.setCSS(make_css<Value, Alias>(prop, val, factory))
+
+			const name = formatPropName(key)
+			const aliasCallback = (_aliases as any)[key]
+
+			if (isObject(cssval)) {
+				// create media
+				const breakpointKeys = Object.keys(options?.breakpoints || {})
+				if (!options?.breakpoints || !breakpointKeys.length) {
+					throw new Error(`Invaid Value ${key}`);
+				}
+				let breakpoints: any = {}
+				for (let bk in cssval) {
+					if (breakpointKeys.includes(bk)) {
+						breakpoints[bk] = options?.breakpoints[bk]
+					}
+				}
+
+				breakpoints = Object.fromEntries(Object.entries(breakpoints).sort(([, a]: any, [, b]: any) => a - b))
+
+				for (let breakpointKey of Object.keys(breakpoints).reverse()) {
+					const breakpointNum = breakpoints[breakpointKey]
+					const _mval = formatValue(cssval[breakpointKey], key)
+					let media = ''
+					const aliasObject = aliasCallback && aliasCallback(_mval)
+					if (aliasObject) {
+						let alias_css = ''
+						for (let askey in aliasObject) {
+							alias_css += `${askey}:${formatValue(aliasObject[askey], askey)};`
+						}
+						media = `@media screen and (min-width: ${breakpointNum}px){.${baseClass}{${alias_css}}}`
+					} else {
+						media = `@media screen and (min-width: ${breakpointNum}px){.${baseClass}{${name}:${_mval}}}`
+					}
+
+					stack.push(media)
+				}
+
+			} else {
+				const aliasObject = aliasCallback && aliasCallback(cssval)
+				if (aliasObject) {
+					for (let askey in aliasObject) {
+						main_css += `${askey}:${formatValue(aliasObject[askey], askey)};`
+					}
+				} else {
+					main_css += `${name}:${formatValue(cssval, key)};`
+				}
+			}
 		}
 	}
 
-	return factory
+	stack.push(`.${baseClass}{${main_css}}`)
+
+	return stack
 }
 
 
-export const css = <Value = {}, Alias = { [key: string]: CSSValueType<Value> | any }>(_css: CSSObject<Value, Alias>, options?: OptionsProps<Value>) => {
-	const factory = css_process<Value, Alias>(_css, undefined, options)
-	if (!factory.generated) {
-		factory.generate()
-		options?.getFactory && options.getFactory(factory)
+const css = (_css: CSSProps, options?: OptionsProps) => {
+	const cacheKey = JSON.stringify(_css)
+	let _bashClass = CACHE.get(cacheKey)
+	if (_bashClass) {
+		return _bashClass
 	}
-	return factory.id
+	let _aliases: any = defaultAliases
+	if (options?.getAliases) {
+		_aliases = options.getAliases(defaultAliases)
+	}
+	const baseClass = (options?.classPrefix || "css-") + uid()
+	const generated = generateCss(_css, baseClass, _aliases, options)
+	CACHE.set(cacheKey, baseClass)
+	const tag = document.createElement("style");
+	tag.innerHTML = generated.reverse().join('')
+	// tag.setAttribute(`data-naxcss`, baseClass)
+	document.head.append(tag)
+	return baseClass
 }
+
+export default css

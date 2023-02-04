@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { css } from '../src/css'
+import css from '../src'
 // import { css } from '@emotion/css'
 
 const parformance = () => {
@@ -72,12 +72,24 @@ const parformance = () => {
 // parformance()
 
 
+
+
 const App = () => {
 
 
+	const _options = {
+		breakpoints: {
+			sm: 700,
+			md: 900,
+			lg: 1190,
+			xs: 500,
+		}
+	}
 
-
-	const _css = {
+	const className = css({
+		"& div p": {
+			background: ""
+		},
 		width: {
 			xs: 200,
 			md: 400
@@ -87,7 +99,6 @@ const App = () => {
 			md: "red",
 			sm: "yellow",
 			lg: "green",
-
 		},
 		lineHeight: 20,
 		'& div': {
@@ -95,30 +106,11 @@ const App = () => {
 			height: {
 				lg: 500
 			}
-		}
-	}
-
-	const _options = {
-		breakpoints: {
-			sm: 700,
-			md: 900,
-			lg: 1190,
-			xs: 500,
-
-		}
-	}
-
-	css(_css, _options)
-	css(_css, _options)
-	css(_css, _options)
-	css(_css, _options)
-	css(_css, _options)
-
-	const className = css(_css, _options)
-	// const className = css()
+		},
+	}, _options)
 
 	return (
-		<div className={className}>
+		<div className={"className"}>
 			Nice
 		</div>
 	);
