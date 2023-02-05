@@ -67,6 +67,8 @@ export type CSSProps =
    | CSS.Properties
    | AliasesProps;
 
+export type keyframesType = { [x: string]: CSSProps }
+
 export type AliasFN = (v: any, k: string) => Partial<CSSProps>;
 export type AliasObjectType = { [key in keyof AliasesProps]: AliasFN };
 

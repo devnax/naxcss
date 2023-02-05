@@ -1,14 +1,14 @@
 import defaultAliases from './aliases'
-import { CSSProps, OptionsProps } from './types';
+import { CSSProps, OptionsProps, keyframesType } from './types';
 
 const CACHE = new Map<string, string>();
-const uid = () => Math.random().toString(36).substring(2, 8);
-const isObject = (v: any) => typeof v === "object" && !Array.isArray(v);
 const number_val_props = ["fontWeight", "lineHeight", "opacity", "zIndex", "flex", "order"]
 const formatPropName = (name: string) => name.split(/(?=[A-Z])/).join("-").toLowerCase();
 const formatValue = (val: any, key: string) => {
 	return typeof val === 'number' && !number_val_props.includes(key) ? `${val}px` : val
 }
+
+
 
 export const generateCss = (_css: any, baseClass: string, _aliases = defaultAliases, options?: OptionsProps) => {
 	let stack: any = []
@@ -26,7 +26,7 @@ export const generateCss = (_css: any, baseClass: string, _aliases = defaultAlia
 			const name = formatPropName(key)
 			const aliasCallback = (_aliases as any)[key]
 
-			if (isObject(cssval)) {
+			if (typeof cssval === "object" && !Array.isArray(cssval)) {
 				// create media
 				const breakpointKeys = Object.keys(options?.breakpoints || {})
 				if (!options?.breakpoints || !breakpointKeys.length) {
@@ -72,13 +72,20 @@ export const generateCss = (_css: any, baseClass: string, _aliases = defaultAlia
 		}
 	}
 
-	stack.push(`.${baseClass}{${main_css}}`)
+	stack.push(`${baseClass ? "." + baseClass : ""}{${main_css}}`)
 
 	return stack
 }
 
 
-const css = (_css: CSSProps, options?: OptionsProps) => {
+const injectStyle = (_css: string) => {
+	const tag = document.createElement("style");
+	tag.innerHTML = _css
+	// tag.setAttribute(`data-naxcss`, baseClass)
+	document.head.append(tag)
+}
+
+export const css = (_css: CSSProps, options?: OptionsProps) => {
 	const cacheKey = JSON.stringify(_css)
 	let _bashClass = CACHE.get(cacheKey)
 	if (_bashClass) {
@@ -88,14 +95,57 @@ const css = (_css: CSSProps, options?: OptionsProps) => {
 	if (options?.getAliases) {
 		_aliases = options.getAliases(defaultAliases)
 	}
-	const baseClass = (options?.classPrefix || "css-") + uid()
+	const id = Math.random().toString(36).substring(2, 8)
+	const baseClass = (options?.classPrefix || "css-") + id
 	const generated = generateCss(_css, baseClass, _aliases, options)
 	CACHE.set(cacheKey, baseClass)
-	const tag = document.createElement("style");
-	tag.innerHTML = generated.reverse().join('')
-	// tag.setAttribute(`data-naxcss`, baseClass)
-	document.head.append(tag)
+	injectStyle(generated.reverse().join(''))
 	return baseClass
 }
 
-export default css
+
+export const keyframes = (framesObject: keyframesType, options?: OptionsProps) => {
+	const cacheKey = JSON.stringify(framesObject)
+	let animName = CACHE.get("keyframes_" + cacheKey)
+	if (animName) {
+		return animName
+	}
+
+	let all_frames: any = {}
+	const id = Math.random().toString(36).substring(2, 8)
+
+	for (let frameKey in framesObject) {
+		const _css = framesObject[frameKey]
+		const generated = generateCss(_css, id, defaultAliases, options).reverse()
+		for (let i = 0; i < generated.length; i++) {
+			const item = generated[i]
+			const generated_class_name = item.split('{')[0]
+			const animname: string = generated_class_name.replace(/ |\./g, '_')
+			if (!all_frames[animname]) {
+				all_frames[animname] = {
+					frames: [],
+					classname: generated_class_name.replace('.', '')
+				}
+			}
+			all_frames[animname].frames.push(`${frameKey}${item.replace(generated_class_name, '')}`)
+		}
+	}
+	let gen_frames = ''
+	let gen_anim_css: any = {}
+	for (let animname in all_frames) {
+		const item = all_frames[animname]
+		gen_frames += `@keyframes ${animname}{${item.frames.join('')}}`
+		if (item.classname === id) {
+			gen_anim_css['animationName'] = animname
+		} else {
+			const selector = "& " + item.classname.replace(id, '')
+			if (!gen_anim_css[selector]) {
+				gen_anim_css[selector] = {}
+			}
+			gen_anim_css[selector]["animationName"] = animname
+		}
+	}
+
+	injectStyle(gen_frames);
+	return css(gen_anim_css)
+}

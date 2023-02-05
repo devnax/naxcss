@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import css from '../src'
+import { css, keyframes } from '../src'
 // import { css } from '@emotion/css'
 
 const parformance = () => {
@@ -75,7 +75,7 @@ const parformance = () => {
 
 
 const App = () => {
-
+	const [show, setShow] = React.useState(false)
 
 	const _options = {
 		breakpoints: {
@@ -86,32 +86,38 @@ const App = () => {
 		}
 	}
 
+
+	const framclass = keyframes({
+		"0%": {
+			transform: "scale(.8)",
+			opacity: 0
+		},
+
+		'100%': {
+			transform: "scale(1)",
+			opacity: 1
+		}
+	})
+
 	const className = css({
-		"& div p": {
-			background: ""
-		},
-		width: {
-			xs: 200,
-			md: 400
-		},
-		height: 200,
-		bgcolor: {
-			md: "red",
-			sm: "yellow",
-			lg: "green",
-		},
-		lineHeight: 20,
-		'& div': {
-			width: 100,
-			height: {
-				lg: 500
-			}
-		},
+		position: "fixed",
+		left: "0",
+		top: "0",
+		width: "100%",
+		height: "100%",
+		bgcolor: "red",
+		flexBox: true,
+		justifyCenter: true,
+		itemsCenter: true,
+		animationDuration: ".1s",
+		animationTimingFunction: "linear",
 	}, _options)
 
 	return (
-		<div className={"className"}>
-			Nice
+		<div className={(show ? className + ' ' + framclass : "")}>
+			<button onClick={() => {
+				setShow(!show)
+			}}>Toggle</button>
 		</div>
 	);
 };
