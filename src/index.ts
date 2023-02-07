@@ -66,10 +66,10 @@ export const generateCss = (_css: any, baseClass: string, _aliases = defaultAlia
 				const aliasObject = aliasCallback && aliasCallback(cssval)
 				if (aliasObject) {
 					for (let askey in aliasObject) {
-						main_css += `${askey}:${formatValue(aliasObject[askey], askey)};`
+						main_css += withPrefix(askey, formatValue(aliasObject[askey], askey))
 					}
 				} else {
-					main_css += withPrefix(name, formatValue(cssval, propName)); // `${name}:${formatValue(cssval, propName)};`
+					main_css += withPrefix(name, formatValue(cssval, propName));
 				}
 			}
 		}
