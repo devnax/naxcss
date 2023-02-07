@@ -69,7 +69,7 @@ const parformance = () => {
 	const after = Date.now();
 	console.log('loop 20000 in ', (after - before) / 1000);
 }
-// parformance()
+parformance()
 
 
 
@@ -87,34 +87,49 @@ const App = () => {
 	}
 
 
-	const framclass = keyframes({
-		"0%": {
-			transform: "scale(.8)",
-			opacity: 0
-		},
+	// const framclass = keyframes({
+	// 	"0%": {
+	// 		transform: "scale(.8)",
+	// 		opacity: 0,
+	// 		"& button": {
+	// 			width: 10,
+	// 			height: 10
+	// 		}
+	// 	},
 
-		'100%': {
-			transform: "scale(1)",
-			opacity: 1
-		}
-	})
+	// 	'100%': {
+	// 		transform: "scale(1)",
+	// 		opacity: 1,
+	// 		"& button": {
+	// 			width: 100,
+	// 			height: 100
+	// 		}
+	// 	}
+	// })
 
-	const className = css({
-		position: "fixed",
-		left: "0",
-		top: "0",
-		width: "100%",
-		height: "100%",
-		bgcolor: "red",
-		flexBox: true,
-		justifyCenter: true,
-		itemsCenter: true,
-		animationDuration: ".1s",
-		animationTimingFunction: "linear",
-	}, _options)
+	// const className = css({
+	// 	border: "2px solid",
+	// 	position: "fixed",
+	// 	left: 0,
+	// 	top: 0,
+	// 	width: "100%",
+	// 	height: "100%",
+	// 	bgcolor: "red",
+	// 	flexBox: true,
+	// 	justifyCenter: true,
+	// 	itemsCenter: true,
+	// 	animationDuration: ".1s",
+	// 	animationTimingFunction: "linear",
+
+	// 	'& button': {
+	// 		animationDuration: "1s",
+	// 		animationTimingFunction: "linear",
+	// 		animationIterationCount: "infinite"
+	// 	}
+	// }, _options)
 
 	return (
-		<div className={(show ? className + ' ' + framclass : "")}>
+		<div className={""}>
 			<button onClick={() => {
 				setShow(!show)
 			}}>Toggle</button>

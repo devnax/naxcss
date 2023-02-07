@@ -4,7 +4,7 @@ light and simple css injector. this is 4x faster then emotion-css
 
 
 ```js
-import css from 'naxcss'
+import {css} from 'naxcss'
 
 const options = {
    classPrefix: "naxcss",
@@ -43,6 +43,44 @@ const classname = css<Value, Alias>({
 
 
 ```
+
+
+
+### Animation Keyframes
+
+```js
+
+import {keyframes} from 'naxcss'
+
+const classname = keyframes({
+   '0%': {
+      opacity: 0,
+      '& .child':{
+         background: "transparent"
+      }
+   },
+   '100%':{
+      opacity: 1,
+      '& .child':{
+         background: "red"
+      }
+   }
+})
+
+```
+
+
+
+### Hex to Alpha
+
+```js
+
+import {alpha} from 'naxcss'
+
+alpha("#aaaaaa", .4)
+
+```
+
 
 
 #### Default Aliases

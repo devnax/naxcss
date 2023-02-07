@@ -1,5 +1,7 @@
 import defaultAliases from './aliases'
 import { CSSProps, OptionsProps, keyframesType } from './types';
+import { withPrefix } from './prefix'
+export * from './types'
 
 const CACHE = new Map<string, string>();
 const number_val_props = ["fontWeight", "lineHeight", "opacity", "zIndex", "flex", "order"]
@@ -10,27 +12,28 @@ const formatValue = (val: any, key: string) => {
 
 
 
+
 export const generateCss = (_css: any, baseClass: string, _aliases = defaultAliases, options?: OptionsProps) => {
 	let stack: any = []
 	let main_css: any = ''
 
-	for (let key in _css) {
-		const cssval = (_css as any)[key]
-		if (key.startsWith("&")) {
+	for (let propName in _css) {
+		const cssval = (_css as any)[propName]
+		if (propName.startsWith("&")) {
 			stack = [
 				...stack,
-				...generateCss(cssval, key.replace('&', baseClass), _aliases, options)
+				...generateCss(cssval, propName.replace('&', baseClass), _aliases, options)
 			]
 		} else {
 
-			const name = formatPropName(key)
-			const aliasCallback = (_aliases as any)[key]
+			const name = formatPropName(propName)
+			const aliasCallback = (_aliases as any)[propName]
 
 			if (typeof cssval === "object" && !Array.isArray(cssval)) {
 				// create media
 				const breakpointKeys = Object.keys(options?.breakpoints || {})
 				if (!options?.breakpoints || !breakpointKeys.length) {
-					throw new Error(`Invaid Value ${key}`);
+					throw new Error(`Invaid Value ${propName}`);
 				}
 				let breakpoints: any = {}
 				for (let bk in cssval) {
@@ -43,7 +46,7 @@ export const generateCss = (_css: any, baseClass: string, _aliases = defaultAlia
 
 				for (let breakpointKey of Object.keys(breakpoints).reverse()) {
 					const breakpointNum = breakpoints[breakpointKey]
-					const _mval = formatValue(cssval[breakpointKey], key)
+					const _mval = formatValue(cssval[breakpointKey], propName)
 					let media = ''
 					const aliasObject = aliasCallback && aliasCallback(_mval)
 					if (aliasObject) {
@@ -66,7 +69,7 @@ export const generateCss = (_css: any, baseClass: string, _aliases = defaultAlia
 						main_css += `${askey}:${formatValue(aliasObject[askey], askey)};`
 					}
 				} else {
-					main_css += `${name}:${formatValue(cssval, key)};`
+					main_css += withPrefix(name, formatValue(cssval, propName)); // `${name}:${formatValue(cssval, propName)};`
 				}
 			}
 		}
@@ -105,8 +108,8 @@ export const css = (_css: CSSProps, options?: OptionsProps) => {
 
 
 export const keyframes = (framesObject: keyframesType, options?: OptionsProps) => {
-	const cacheKey = JSON.stringify(framesObject)
-	let animName = CACHE.get("keyframes_" + cacheKey)
+	const cacheKey = "keyframes_" + JSON.stringify(framesObject)
+	let animName = CACHE.get(cacheKey)
 	if (animName) {
 		return animName
 	}
@@ -147,5 +150,12 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
 	}
 
 	injectStyle(gen_frames);
-	return css(gen_anim_css)
+	const cls = css(gen_anim_css)
+	CACHE.set(cacheKey, cls)
+	return cls
+}
+
+
+export const alpha = (hex: string, opacity: number) => {
+	return hex + Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255).toString(16).toUpperCase();
 }
