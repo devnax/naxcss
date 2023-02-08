@@ -1,7 +1,11 @@
 import defaultAliases from './aliases'
 import { CSSProps, OptionsProps, keyframesType } from './types';
 import { withPrefix } from './prefix'
+import { animation } from './animation'
+export { animation }
 export * from './types'
+
+
 
 const CACHE = new Map<string, string>();
 const number_val_props = ["fontWeight", "lineHeight", "opacity", "zIndex", "flex", "order"]

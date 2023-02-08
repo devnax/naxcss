@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { css, keyframes } from '../src'
+import { css, keyframes, animation } from '../src'
 // import { css } from '@emotion/css'
 
 const parformance = () => {
@@ -69,13 +69,42 @@ const parformance = () => {
 	const after = Date.now();
 	console.log('loop 20000 in ', (after - before) / 1000);
 }
-parformance()
+// parformance()
 
 
 
 
 const App = () => {
 	const [show, setShow] = React.useState(false)
+	const [animcls, setAnimCls] = React.useState('')
+	const ref: any = React.useRef()
+
+	React.useEffect(() => {
+		ref.current = animation({
+			duration: 500,
+			init: {
+				transform: "scale(1.2) ",
+			},
+			enter: {
+				transform: "scale(1) skew(10deg)",
+			},
+			exit: {
+				transform: "scale(1.2)",
+				opacity: 0
+			},
+			// exited: {
+			// 	bgcolor: "green"
+			// }
+		}, ({ type, classname }) => {
+			setAnimCls(classname)
+			if (type === 'enter') {
+				setShow(true)
+			} else if (type === 'exited') {
+				setShow(false)
+			}
+		})
+	}, [])
+
 
 	const _options = {
 		breakpoints: {
@@ -128,11 +157,34 @@ const App = () => {
 	// 	}
 	// }, _options)
 
+	const cls = css({
+		borderRadius: 100,
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		margin: "100px auto",
+		position: "fixed",
+		left: "50%",
+		top: 100,
+		width: 200,
+		bgcolor: "red",
+		height: 200,
+	})
+
 	return (
-		<div className={""}>
+		<div>
+			{
+				show && <div className={cls + " " + animcls}>
+
+				</div>
+			}
+
 			<button onClick={() => {
-				setShow(!show)
-			}}>Toggle</button>
+				ref.current.in()
+			}}>In</button>
+			<button onClick={() => {
+				ref.current.out()
+			}}>out</button>
 		</div>
 	);
 };

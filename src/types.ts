@@ -59,13 +59,22 @@ export type AliasesProps = {
 }
 
 
-export type CSSProps =
+export type Properties = CSS.Properties & AliasesProps
+export type PropertieKeys = string & keyof Properties
+
+export type CSSMap =
    | string
    | number
-   | boolean
-   | { [x: string]: CSSProps }
+   | { [x: string]: CSSMap }
    | CSS.Properties
    | AliasesProps;
+
+export type CSSKeyMap =
+   | string
+   | keyof CSS.Properties
+   | keyof AliasesProps;
+
+export type CSSProps = { [key in CSSKeyMap]?: CSSMap }
 
 export type keyframesType = { [x: string]: CSSProps }
 
@@ -79,3 +88,34 @@ export interface OptionsProps {
    classPrefix?: string;
    breakpoints?: { [key: string]: number };
 }
+
+
+export type AnimationCSSProps = CSSProps & {
+   duration?: number;
+}
+
+
+export type AnimationFuncReturnType = {
+   isIn: () => boolean;
+   in: () => void;
+   out: () => void;
+}
+
+export type AnimationPropsDirectory = "init" | "enter" | "entered" | "exit" | "exited"
+
+export type AnimationPropsType = {
+   duration?: number;
+   init: AnimationCSSProps;
+   enter: AnimationCSSProps;
+   entered?: AnimationCSSProps;
+   exit: AnimationCSSProps;
+   exited?: AnimationCSSProps;
+}
+
+export type AnimationCallbackArgsType = {
+   type: AnimationPropsDirectory,
+   classname: string
+}
+
+
+export type AnimationCallbackType = (args: AnimationCallbackArgsType) => void;
