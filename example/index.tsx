@@ -73,7 +73,6 @@ const parformance = () => {
 
 
 
-
 const App = () => {
 	const [show, setShow] = React.useState(false)
 	const [animcls, setAnimCls] = React.useState('')
@@ -83,13 +82,14 @@ const App = () => {
 		ref.current = animation({
 			duration: 500,
 			init: {
-				transform: "scale(1.2) ",
+				scale: 1.2,
 			},
 			enter: {
-				transform: "scale(1) skew(10deg)",
+				scale: 1,
+				skew: 10
 			},
 			exit: {
-				transform: "scale(1.2)",
+				scale: 1.2,
 				opacity: 0
 			},
 			// exited: {

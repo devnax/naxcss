@@ -1,4 +1,4 @@
-import defaultAliases from './aliases'
+import defAliases from './aliases'
 import { CSSProps, OptionsProps, keyframesType } from './types';
 import { withPrefix } from './prefix'
 import { animation } from './animation'
@@ -17,7 +17,7 @@ const formatValue = (val: any, key: string) => {
 
 
 
-export const generateCss = (_css: any, baseClass: string, _aliases = defaultAliases, options?: OptionsProps) => {
+export const generateCss = (_css: any, baseClass: string, _aliases = defAliases, options?: OptionsProps) => {
 	let stack: any = []
 	let main_css: any = ''
 
@@ -98,9 +98,9 @@ export const css = (_css: CSSProps, options?: OptionsProps) => {
 	if (_bashClass) {
 		return _bashClass
 	}
-	let _aliases: any = defaultAliases
+	let _aliases: any = defAliases
 	if (options?.getAliases) {
-		_aliases = options.getAliases(defaultAliases)
+		_aliases = options.getAliases(defAliases)
 	}
 	const id = Math.random().toString(36).substring(2, 8)
 	const baseClass = (options?.classPrefix || "css-") + id
@@ -123,7 +123,7 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
 
 	for (let frameKey in framesObject) {
 		const _css = framesObject[frameKey]
-		const generated = generateCss(_css, id, defaultAliases, options).reverse()
+		const generated = generateCss(_css, id, defAliases, options).reverse()
 		for (let i = 0; i < generated.length; i++) {
 			const item = generated[i]
 			const generated_class_name = item.split('{')[0]

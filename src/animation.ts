@@ -1,5 +1,25 @@
-import { AnimationPropsType, AnimationCallbackType, AnimationFuncReturnType } from './types'
+import { AnimationCSSProps, AnimationPropsType, AnimationCallbackType, AnimationFuncReturnType } from './types'
 import { keyframes, css } from '.'
+
+
+const formatProps = (p: AnimationCSSProps) => {
+    const { duration, scale, rotate, skew, perspective, x, y, ...rest } = p as any
+    rest.transform = rest.transform || ""
+    scale && (rest.transform += typeof scale === "number" ? ` scale(${scale})` : scale)
+    rotate && (rest.transform += typeof rotate === "number" ? ` rotate(${rotate}deg)` : rotate)
+    skew && (rest.transform += typeof skew === "number" ? ` skew(${skew}deg)` : skew)
+    perspective && (rest.transform += typeof perspective === "number" ? ` perspective(${perspective}px)` : perspective)
+
+    let translate = ''
+    x && (translate += typeof x === 'number' ? ` ${x}px` : x)
+    y && (translate += typeof y === 'number' ? ` ${y}px` : y)
+    translate && (rest.transform += ` translate(${translate.trim().split(' ').join(',')})`)
+
+    return {
+        duration,
+        css: rest
+    }
+}
 
 export const animation = (props: AnimationPropsType, cb: AnimationCallbackType): AnimationFuncReturnType => {
     const state = {
@@ -8,12 +28,12 @@ export const animation = (props: AnimationPropsType, cb: AnimationCallbackType):
     return {
         isIn: () => state.in,
         in: () => {
-            const { duration, ...enterCss } = props.enter
-            const dur = duration || props.duration || 300
+            const enter = formatProps(props.enter)
+            const dur = enter.duration || props.duration || 300
 
             const framcls = keyframes({
-                from: props.init,
-                to: enterCss
+                from: formatProps(props.init).css,
+                to: enter.css
             })
 
             const _animcss = css({
@@ -28,16 +48,17 @@ export const animation = (props: AnimationPropsType, cb: AnimationCallbackType):
 
             setTimeout(() => {
                 state.in = true
-                cb({ type: "entered", classname: css(props.entered || enterCss) })
+                const enteredcss = props.entered && formatProps(props.entered).css
+                cb({ type: "entered", classname: css(enteredcss || enter.css) })
             }, dur);
         },
         out: () => {
-            const { duration, ...exitCss } = props.exit
-            const dur = duration || props.duration || 300
+            const exit = formatProps(props.exit)
+            const dur = exit.duration || props.duration || 300
 
             const framcls = keyframes({
-                from: props.enter,
-                to: exitCss
+                from: formatProps(props.enter).css,
+                to: exit.css
             })
             const _animcss = css({
                 animationDuration: `${dur}ms`,
@@ -48,7 +69,8 @@ export const animation = (props: AnimationPropsType, cb: AnimationCallbackType):
 
             setTimeout(() => {
                 state.in = false
-                cb({ type: "exited", classname: css(props.exited || exitCss) })
+                const exitedcss = props.exited && formatProps(props.exited).css
+                cb({ type: "exited", classname: css(exitedcss || exit.css) })
             }, dur);
         }
     }

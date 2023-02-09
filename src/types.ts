@@ -58,23 +58,12 @@ export type AliasesProps = {
    contentAround?: boolean;
 }
 
-
-export type Properties = CSS.Properties & AliasesProps
-export type PropertieKeys = string & keyof Properties
-
-export type CSSMap =
+export type CSSProps =
    | string
    | number
-   | { [x: string]: CSSMap }
+   | { [x: string]: CSSProps }
    | CSS.Properties
    | AliasesProps;
-
-export type CSSKeyMap =
-   | string
-   | keyof CSS.Properties
-   | keyof AliasesProps;
-
-export type CSSProps = { [key in CSSKeyMap]?: CSSMap }
 
 export type keyframesType = { [x: string]: CSSProps }
 
@@ -90,8 +79,14 @@ export interface OptionsProps {
 }
 
 
-export type AnimationCSSProps = CSSProps & {
+export type AnimationCSSProps = CSSProps | {
    duration?: number;
+   x?: number;
+   y: number;
+   scale?: string | number;
+   rotate?: string | number;
+   skew?: string | number;
+   perspective?: string | number;
 }
 
 

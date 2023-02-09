@@ -70,6 +70,39 @@ const classname = keyframes({
 ```
 
 
+### Advanch Animation 
+
+```js
+
+import {animation} from 'naxcss'
+
+const classname = animation({
+   duration: 300,
+   init: {
+      opacity: 0,
+      scale: 1,
+      skew: 0,
+      rotate: 100,
+      perspective: 20,
+      x: 50,
+      y: 50
+   },
+   enter:{
+      opacity: 1,
+   },
+   exit: {
+      ...
+   },
+   exited: {
+      ...
+   }
+}, ({type, classname}) => {
+   document.getElementById("animate").classList.add(classname)
+})
+
+```
+
+
 
 ### Hex to Alpha
 
