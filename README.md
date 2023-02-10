@@ -8,13 +8,19 @@ import {css} from 'naxcss'
 
 const options = {
    classPrefix: "naxcss",
-   getAliases: (aliases) => {
-      return aliases
-   },
    breakpoints: {
       xs: 0,
       sm: 500,
       ...
+   },
+    getAlias: (aliases) => {
+      return aliases
+   },
+   getCss: (_css) => {
+
+   },
+   getValue: (value, propname) => {
+      return value
    }
 }
 

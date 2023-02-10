@@ -1,13 +1,11 @@
 import defAliases from './aliases'
-import { CSSProps, OptionsProps, keyframesType } from './types';
+import { CSSProps, OptionsProps, keyframesType, CACHE_TYPE } from './types';
 import { withPrefix } from './prefix'
 import { animation } from './animation'
 export { animation }
 export * from './types'
 
-
-
-const CACHE = new Map<string, string>();
+const CACHE = new Map<string, CACHE_TYPE>();
 const number_val_props = ["fontWeight", "lineHeight", "opacity", "zIndex", "flex", "order"]
 const formatPropName = (name: string) => name.split(/(?=[A-Z])/).join("-").toLowerCase();
 const formatValue = (val: any, key: string) => {
@@ -15,14 +13,12 @@ const formatValue = (val: any, key: string) => {
 }
 
 
-
-
 export const generateCss = (_css: any, baseClass: string, _aliases = defAliases, options?: OptionsProps) => {
 	let stack: any = []
 	let main_css: any = ''
 
 	for (let propName in _css) {
-		const cssval = (_css as any)[propName]
+		let cssval = (_css as any)[propName]
 		if (propName.startsWith("&")) {
 			stack = [
 				...stack,
@@ -50,7 +46,9 @@ export const generateCss = (_css: any, baseClass: string, _aliases = defAliases,
 
 				for (let breakpointKey of Object.keys(breakpoints).reverse()) {
 					const breakpointNum = breakpoints[breakpointKey]
-					const _mval = formatValue(cssval[breakpointKey], propName)
+					let _mval = options?.getValue ? options.getValue(cssval[breakpointKey], propName) : cssval[breakpointKey]
+					_mval = formatValue(_mval, propName)
+
 					let media = ''
 					const aliasObject = aliasCallback && aliasCallback(_mval)
 					if (aliasObject) {
@@ -67,6 +65,8 @@ export const generateCss = (_css: any, baseClass: string, _aliases = defAliases,
 				}
 
 			} else {
+				cssval = options?.getValue ? options.getValue(cssval, propName) : cssval
+
 				const aliasObject = aliasCallback && aliasCallback(cssval)
 				if (aliasObject) {
 					for (let askey in aliasObject) {
@@ -86,36 +86,44 @@ export const generateCss = (_css: any, baseClass: string, _aliases = defAliases,
 
 
 const injectStyle = (_css: string) => {
-	const tag = document.createElement("style");
-	tag.innerHTML = _css
-	// tag.setAttribute(`data-naxcss`, baseClass)
-	document.head.append(tag)
+	if (typeof window !== 'undefined' && window.document) {
+		const tag = document?.createElement("style");
+		tag.innerHTML = _css
+		// tag.setAttribute(`data-naxcss`, baseClass)
+		document?.head.append(tag)
+	}
 }
 
 export const css = (_css: CSSProps, options?: OptionsProps) => {
 	const cacheKey = JSON.stringify(_css)
-	let _bashClass = CACHE.get(cacheKey)
-	if (_bashClass) {
-		return _bashClass
+	let _cache = CACHE.get(cacheKey)
+	if (_cache) {
+		options?.getCss && options.getCss(_cache.css)
+		return _cache.classname
 	}
 	let _aliases: any = defAliases
-	if (options?.getAliases) {
-		_aliases = options.getAliases(defAliases)
+	if (options?.getAlias) {
+		_aliases = options.getAlias(defAliases)
 	}
 	const id = Math.random().toString(36).substring(2, 8)
 	const baseClass = (options?.classPrefix || "css-") + id
-	const generated = generateCss(_css, baseClass, _aliases, options)
-	CACHE.set(cacheKey, baseClass)
-	injectStyle(generated.reverse().join(''))
+	const generated = generateCss(_css, baseClass, _aliases, options).reverse().join('')
+	options?.getCss && options.getCss(generated)
+	CACHE.set(cacheKey, {
+		classname: baseClass,
+		css: generated
+	})
+	injectStyle(generated)
 	return baseClass
 }
 
 
 export const keyframes = (framesObject: keyframesType, options?: OptionsProps) => {
 	const cacheKey = "keyframes_" + JSON.stringify(framesObject)
-	let animName = CACHE.get(cacheKey)
-	if (animName) {
-		return animName
+	let _cache = CACHE.get(cacheKey)
+	if (_cache) {
+		options?.getCss && options.getCss(_cache.css)
+		return _cache.classname
 	}
 
 	let all_frames: any = {}
@@ -154,8 +162,12 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
 	}
 
 	injectStyle(gen_frames);
+	options?.getCss && options.getCss(gen_frames + " " + gen_anim_css)
 	const cls = css(gen_anim_css)
-	CACHE.set(cacheKey, cls)
+	CACHE.set(cacheKey, {
+		classname: cls,
+		css: gen_frames
+	})
 	return cls
 }
 

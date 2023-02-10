@@ -67,15 +67,22 @@ export type CSSProps =
 
 export type keyframesType = { [x: string]: CSSProps }
 
+export type CACHE_TYPE = {
+   css: string;
+   classname: string;
+}
+
 export type AliasFN = (v: any, k: string) => Partial<CSSProps>;
 export type AliasObjectType = { [key in keyof AliasesProps]: AliasFN };
 
 export type getAlisesProps = AliasesProps | { [key: string]: any }
 
 export interface OptionsProps {
-   getAliases?: (aliases: getAlisesProps) => getAlisesProps;
    classPrefix?: string;
    breakpoints?: { [key: string]: number };
+   getAlias?: (aliases: getAlisesProps) => getAlisesProps;
+   getCss?: (_css: string) => void;
+   getValue?: (value: string | number, prop: string) => (string | number)
 }
 
 
