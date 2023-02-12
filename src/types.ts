@@ -79,6 +79,7 @@ export type getAlisesProps = AliasesProps | { [key: string]: any }
 
 export interface OptionsProps {
    classPrefix?: string;
+   cachePrefix?: string;
    breakpoints?: { [key: string]: number };
    getAlias?: (aliases: getAlisesProps) => getAlisesProps;
    getCss?: (_css: string) => void;

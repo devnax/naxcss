@@ -89,13 +89,13 @@ const injectStyle = (_css: string) => {
 	if (typeof window !== 'undefined' && window.document) {
 		const tag = document?.createElement("style");
 		tag.innerHTML = _css
-		// tag.setAttribute(`data-naxcss`, baseClass)
+		tag.setAttribute(`data-naxcss`, "true")
 		document?.head.append(tag)
 	}
 }
 
 export const css = (_css: CSSProps, options?: OptionsProps) => {
-	const cacheKey = JSON.stringify(_css)
+	const cacheKey = (options?.cachePrefix || "") + JSON.stringify(_css)
 	let _cache = CACHE.get(cacheKey)
 	if (_cache) {
 		options?.getCss && options.getCss(_cache.css)
@@ -119,7 +119,7 @@ export const css = (_css: CSSProps, options?: OptionsProps) => {
 
 
 export const keyframes = (framesObject: keyframesType, options?: OptionsProps) => {
-	const cacheKey = "keyframes_" + JSON.stringify(framesObject)
+	const cacheKey = (options?.cachePrefix || "") + "keyframes_" + JSON.stringify(framesObject)
 	let _cache = CACHE.get(cacheKey)
 	if (_cache) {
 		options?.getCss && options.getCss(_cache.css)

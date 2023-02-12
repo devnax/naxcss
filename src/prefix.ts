@@ -5,7 +5,11 @@ const CACHE = new Map()
 const ucf = (t: string) => t.substr(0, 1).toUpperCase() + t.substr(1)
 
 export const withPrefix = (prop: string, value: string) => {
-   const declaration = _declaration || (_declaration = document?.createElement("div").style)
+   if (!(typeof window !== 'undefined' && window.document)) {
+      return `${prop}:${value};`
+   }
+
+   const declaration = _declaration || (_declaration = document.createElement("div").style)
    value = value.toString()
 
    declaration.setProperty(prop, value)

@@ -8,6 +8,7 @@ import {css} from 'naxcss'
 
 const options = {
    classPrefix: "naxcss",
+   cachePrefix: "",
    breakpoints: {
       xs: 0,
       sm: 500,
