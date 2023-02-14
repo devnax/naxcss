@@ -1,6 +1,6 @@
 import defAliases from './aliases'
 import { CSSProps, OptionsProps, keyframesType, CACHE_TYPE } from './types';
-import { withPrefix } from './prefix'
+import { cssPrefix } from './prefix'
 import { animation } from './animation'
 export { animation }
 export * from './types'
@@ -15,7 +15,8 @@ const formatValue = (val: any, key: string) => {
 
 export const generateCss = (_css: any, baseClass: string, _aliases = defAliases, options?: OptionsProps) => {
 	let stack: any = []
-	let main_css: any = ''
+	let main_css: any = {}
+
 
 	for (let propName in _css) {
 		let cssval = (_css as any)[propName]
@@ -28,6 +29,7 @@ export const generateCss = (_css: any, baseClass: string, _aliases = defAliases,
 
 			const name = formatPropName(propName)
 			const aliasCallback = (_aliases as any)[propName]
+
 
 			if (typeof cssval === "object" && !Array.isArray(cssval)) {
 				// create media
@@ -46,40 +48,51 @@ export const generateCss = (_css: any, baseClass: string, _aliases = defAliases,
 
 				for (let breakpointKey of Object.keys(breakpoints).reverse()) {
 					const breakpointNum = breakpoints[breakpointKey]
+
 					let _mval = options?.getValue ? options.getValue(cssval[breakpointKey], propName) : cssval[breakpointKey]
 					_mval = formatValue(_mval, propName)
 
 					let media = ''
 					const aliasObject = aliasCallback && aliasCallback(_mval)
 					if (aliasObject) {
-						let alias_css = ''
+						let alias_css: any = {}
 						for (let askey in aliasObject) {
-							alias_css += `${askey}:${formatValue(aliasObject[askey], askey)};`
+							alias_css[askey] = `${askey}:${formatValue(aliasObject[askey], askey)};`
 						}
-						media = `@media screen and (min-width: ${breakpointNum}px){.${baseClass}{${alias_css}}}`
+						media = `@media screen and (min-width: ${breakpointNum}px){.${baseClass}{${Object.values(alias_css).join("")}}}`
 					} else {
 						media = `@media screen and (min-width: ${breakpointNum}px){.${baseClass}{${name}:${_mval}}}`
 					}
 
 					stack.push(media)
 				}
-
 			} else {
-				cssval = options?.getValue ? options.getValue(cssval, propName) : cssval
 
+				if (options?.getProps) {
+					const _c: any = options.getProps(propName, cssval)
+					if (typeof _c === 'object' && !Array.isArray(_c)) {
+						for (let _gk in _c) {
+							let _name = formatPropName(_gk)
+							main_css[_name] = cssPrefix(_name, formatValue(_c[_gk], _gk))
+						}
+						continue;
+					}
+				}
+
+				cssval = options?.getValue ? options.getValue(cssval, propName) : cssval
 				const aliasObject = aliasCallback && aliasCallback(cssval)
 				if (aliasObject) {
 					for (let askey in aliasObject) {
-						main_css += withPrefix(askey, formatValue(aliasObject[askey], askey))
+						main_css[askey] = cssPrefix(askey, formatValue(aliasObject[askey], askey))
 					}
 				} else {
-					main_css += withPrefix(name, formatValue(cssval, propName));
+					main_css[name] = cssPrefix(name, formatValue(cssval, propName));
 				}
 			}
 		}
 	}
 
-	stack.push(`${baseClass ? "." + baseClass : ""}{${main_css}}`)
+	stack.push(`${baseClass ? "." + baseClass : ""}{${Object.values(main_css).join("")}}`)
 
 	return stack
 }

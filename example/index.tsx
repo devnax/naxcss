@@ -112,50 +112,14 @@ const App = () => {
 			md: 900,
 			lg: 1190,
 			xs: 500,
+		},
+		getProps: (p, v) => {
+			if (p === 'bgcolor') {
+				return { fontSize: 20, color: "red", background: "green" }
+			}
 		}
 	}
 
-
-	// const framclass = keyframes({
-	// 	"0%": {
-	// 		transform: "scale(.8)",
-	// 		opacity: 0,
-	// 		"& button": {
-	// 			width: 10,
-	// 			height: 10
-	// 		}
-	// 	},
-
-	// 	'100%': {
-	// 		transform: "scale(1)",
-	// 		opacity: 1,
-	// 		"& button": {
-	// 			width: 100,
-	// 			height: 100
-	// 		}
-	// 	}
-	// })
-
-	// const className = css({
-	// 	border: "2px solid",
-	// 	position: "fixed",
-	// 	left: 0,
-	// 	top: 0,
-	// 	width: "100%",
-	// 	height: "100%",
-	// 	bgcolor: "red",
-	// 	flexBox: true,
-	// 	justifyCenter: true,
-	// 	itemsCenter: true,
-	// 	animationDuration: ".1s",
-	// 	animationTimingFunction: "linear",
-
-	// 	'& button': {
-	// 		animationDuration: "1s",
-	// 		animationTimingFunction: "linear",
-	// 		animationIterationCount: "infinite"
-	// 	}
-	// }, _options)
 
 	const cls = css({
 		borderRadius: 100,
@@ -169,17 +133,22 @@ const App = () => {
 		width: 200,
 		bgcolor: "red",
 		height: 200,
-	})
+	}, _options)
+
+	const btn = css({
+		bgcolor: "red",
+		fontSize: 10
+	}, _options)
 
 	return (
-		<div>
+		<div className={cls}>
 			{
 				show && <div className={cls + " " + animcls}>
 
 				</div>
 			}
 
-			<button onClick={() => {
+			<button className={btn} onClick={() => {
 				ref.current.in()
 			}}>In</button>
 			<button onClick={() => {

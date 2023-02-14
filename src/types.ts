@@ -83,7 +83,8 @@ export interface OptionsProps {
    breakpoints?: { [key: string]: number };
    getAlias?: (aliases: getAlisesProps) => getAlisesProps;
    getCss?: (_css: string) => void;
-   getValue?: (value: string | number, prop: string) => (string | number)
+   getValue?: (value: string | number, prop: string) => (string | number);
+   getProps?: (key: string, value: string) => CSSProps | void
 }
 
 

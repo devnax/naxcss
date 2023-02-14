@@ -4,7 +4,7 @@ const CACHE = new Map()
 
 const ucf = (t: string) => t.substr(0, 1).toUpperCase() + t.substr(1)
 
-export const withPrefix = (prop: string, value: string) => {
+export const cssPrefix = (prop: string, value: string) => {
    if (!(typeof window !== 'undefined' && window.document)) {
       return `${prop}:${value};`
    }

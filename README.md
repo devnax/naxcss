@@ -22,6 +22,9 @@ const options = {
    },
    getValue: (value, propname) => {
       return value
+   },
+   getProps: (prop, vaue) => {
+      // return css object or void
    }
 }
 
