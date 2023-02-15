@@ -114,6 +114,7 @@ export type AnimationPropsType = {
    entered?: AnimationCSSProps;
    exit: AnimationCSSProps;
    exited?: AnimationCSSProps;
+   cssOptions?: OptionsProps
 }
 
 export type AnimationCallbackArgsType = {

@@ -25,6 +25,8 @@ export const animation = (props: AnimationPropsType, cb: AnimationCallbackType):
     const state = {
         in: false
     }
+
+
     return {
         isIn: () => state.in,
         in: () => {
@@ -34,12 +36,12 @@ export const animation = (props: AnimationPropsType, cb: AnimationCallbackType):
             const framcls = keyframes({
                 from: formatProps(props.init).css,
                 to: enter.css
-            })
+            }, props.cssOptions)
 
             const _animcss = css({
                 animationDuration: `${dur}ms`,
                 animationTimingFunction: "cubic-bezier(0.165, 0.840, 0.440, 1.000)"
-            })
+            }, props.cssOptions)
 
             cb({
                 type: "enter",
@@ -49,7 +51,7 @@ export const animation = (props: AnimationPropsType, cb: AnimationCallbackType):
             setTimeout(() => {
                 state.in = true
                 const enteredcss = props.entered && formatProps(props.entered).css
-                cb({ type: "entered", classname: css(enteredcss || enter.css) })
+                cb({ type: "entered", classname: css(enteredcss || enter.css, props.cssOptions) })
             }, dur);
         },
         out: () => {
@@ -59,18 +61,18 @@ export const animation = (props: AnimationPropsType, cb: AnimationCallbackType):
             const framcls = keyframes({
                 from: formatProps(props.enter).css,
                 to: exit.css
-            })
+            }, props.cssOptions)
             const _animcss = css({
                 animationDuration: `${dur}ms`,
                 animationTimingFunction: "cubic-bezier(0.165, 0.840, 0.440, 1.000)"
-            })
+            }, props.cssOptions)
 
             cb({ type: "exit", classname: _animcss + " " + framcls })
 
             setTimeout(() => {
                 state.in = false
                 const exitedcss = props.exited && formatProps(props.exited).css
-                cb({ type: "exited", classname: css(exitedcss || exit.css) })
+                cb({ type: "exited", classname: css(exitedcss || exit.css, props.cssOptions) })
             }, dur);
         }
     }

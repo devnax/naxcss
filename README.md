@@ -105,7 +105,8 @@ const classname = animation({
    },
    exited: {
       ...
-   }
+   },
+   cssOption: {}, // css options 
 }, ({type, classname}) => {
    document.getElementById("animate").classList.add(classname)
 })
