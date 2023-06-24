@@ -4,22 +4,26 @@ const CACHE = new Map()
 
 const ucf = (t: string) => t.substr(0, 1).toUpperCase() + t.substr(1)
 
-export const cssPrefix = (prop: string, value: string) => {
+// prop -> must be font-size 
+export const cssPrefix = (prop: string, value: string): { prop: string, value: string } => {
    if (!(typeof window !== 'undefined' && window.document)) {
-      return `${prop}:${value};`
+      return { prop, value }
    }
 
    const declaration = _declaration || (_declaration = document.createElement("div").style)
-   value = value.toString()
+   value = value?.toString()
 
    declaration.setProperty(prop, value)
-   if (declaration.getPropertyValue(prop)) {
-      return `${prop}:${value};`
+   if (declaration.getPropertyValue(prop) == value) {
+      return { prop, value }
    }
 
    const gc = CACHE.get(prop)
    if (gc) {
-      return `${gc._prop}:${gc._vprefix}${value};`
+      return {
+         prop: gc._prop,
+         value: `${gc._vprefix}${value}`
+      }
    }
 
    let _prop = prop;
@@ -55,5 +59,5 @@ export const cssPrefix = (prop: string, value: string) => {
    }
 
    CACHE.set(prop, { _prop, _vprefix })
-   return `${_prop}:${_value};`
+   return { prop: _prop, value: _value }
 }

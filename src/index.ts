@@ -1,190 +1,152 @@
-import defAliases from './aliases'
-import { CSSProps, OptionsProps, keyframesType, CACHE_TYPE } from './types';
-import { cssPrefix } from './prefix'
-import { animation } from './animation'
-export { animation }
+import { renderCss } from "./core";
+import { CSSProps, keyframesType, OptionsProps } from "./types";
+import { CSS_CACHE, makeCacheKey, uid } from "./utils";
 export * from './types'
-
-const CACHE = new Map<string, CACHE_TYPE>();
-const number_val_props = ["fontWeight", "lineHeight", "opacity", "zIndex", "flex", "order"]
-const formatPropName = (name: string) => name.split(/(?=[A-Z])/).join("-").toLowerCase();
-const formatValue = (val: any, key: string) => {
-	return typeof val === 'number' && !number_val_props.includes(key) ? `${val}px` : val
+export * from './utils'
+export {
+    CSS_CACHE
 }
 
-
-export const generateCss = (_css: any, baseClass: string, _aliases = defAliases, options?: OptionsProps) => {
-	let stack: any = []
-	let main_css: any = {}
-
-
-	for (let propName in _css) {
-		let cssval = (_css as any)[propName]
-		if (propName.startsWith("&")) {
-			stack = [
-				...stack,
-				...generateCss(cssval, propName.replace('&', baseClass), _aliases, options)
-			]
-		} else {
-
-			const name = formatPropName(propName)
-			const aliasCallback = (_aliases as any)[propName]
-
-
-			if (typeof cssval === "object" && !Array.isArray(cssval)) {
-				// create media
-				const breakpointKeys = Object.keys(options?.breakpoints || {})
-				if (!options?.breakpoints || !breakpointKeys.length) {
-					throw new Error(`Invaid Value ${propName}`);
-				}
-				let breakpoints: any = {}
-				for (let bk in cssval) {
-					if (breakpointKeys.includes(bk)) {
-						breakpoints[bk] = options?.breakpoints[bk]
-					}
-				}
-
-				breakpoints = Object.fromEntries(Object.entries(breakpoints).sort(([, a]: any, [, b]: any) => a - b))
-
-				for (let breakpointKey of Object.keys(breakpoints).reverse()) {
-					const breakpointNum = breakpoints[breakpointKey]
-
-					let _mval = options?.getValue ? options.getValue(cssval[breakpointKey], propName) : cssval[breakpointKey]
-					_mval = formatValue(_mval, propName)
-
-					let media = ''
-					const aliasObject = aliasCallback && aliasCallback(_mval)
-					if (aliasObject) {
-						let alias_css: any = {}
-						for (let askey in aliasObject) {
-							alias_css[askey] = `${askey}:${formatValue(aliasObject[askey], askey)};`
-						}
-						media = `@media screen and (min-width: ${breakpointNum}px){.${baseClass}{${Object.values(alias_css).join("")}}}`
-					} else {
-						media = `@media screen and (min-width: ${breakpointNum}px){.${baseClass}{${name}:${_mval}}}`
-					}
-
-					stack.push(media)
-				}
-			} else {
-
-				if (options?.getProps) {
-					const _c: any = options.getProps(propName, cssval)
-					if (typeof _c === 'object' && !Array.isArray(_c)) {
-						for (let _gk in _c) {
-							let _name = formatPropName(_gk)
-							main_css[_name] = cssPrefix(_name, formatValue(_c[_gk], _gk))
-						}
-						continue;
-					}
-				}
-
-				cssval = options?.getValue ? options.getValue(cssval, propName) : cssval
-				const aliasObject = aliasCallback && aliasCallback(cssval)
-				if (aliasObject) {
-					for (let askey in aliasObject) {
-						main_css[askey] = cssPrefix(askey, formatValue(aliasObject[askey], askey))
-					}
-				} else {
-					main_css[name] = cssPrefix(name, formatValue(cssval, propName));
-				}
-			}
-		}
-	}
-
-	stack.push(`${baseClass ? "." + baseClass : ""}{${Object.values(main_css).join("")}}`)
-
-	return stack
+export const injectStyle = (_css: string, baseClass: string) => {
+    if (typeof window !== 'undefined' && window.document) {
+        const has = document?.querySelector(`[data-naxcss="${baseClass}"]`)
+        if (has) {
+            return
+        }
+        const tag = document?.createElement("style");
+        tag.innerHTML = _css
+        tag.setAttribute(`data-naxcss`, baseClass)
+        document?.head.append(tag)
+    }
 }
 
-
-const injectStyle = (_css: string) => {
-	if (typeof window !== 'undefined' && window.document) {
-		const tag = document?.createElement("style");
-		tag.innerHTML = _css
-		tag.setAttribute(`data-naxcss`, "true")
-		document?.head.append(tag)
-	}
+export const compilte_css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps) => {
+    return renderCss(_css, '', options).reverse().join('')
 }
 
-export const css = (_css: CSSProps, options?: OptionsProps) => {
-	const cacheKey = (options?.cachePrefix || "") + JSON.stringify(_css)
-	let _cache = CACHE.get(cacheKey)
-	if (_cache) {
-		options?.getCss && options.getCss(_cache.css)
-		return _cache.classname
-	}
-	let _aliases: any = defAliases
-	if (options?.getAlias) {
-		_aliases = options.getAlias(defAliases)
-	}
-	const id = Math.random().toString(36).substring(2, 8)
-	const baseClass = (options?.classPrefix || "css-") + id
-	const generated = generateCss(_css, baseClass, _aliases, options).reverse().join('')
-	options?.getCss && options.getCss(generated)
-	CACHE.set(cacheKey, {
-		classname: baseClass,
-		css: generated
-	})
-	injectStyle(generated)
-	return baseClass
-}
+export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps) => {
+    const cache_key = makeCacheKey(_css, options)
+    let _cache = CSS_CACHE.get(cache_key)
+    if (_cache) {
+        options?.getCss && options.getCss(_cache.css)
+        if (options?.return) {
+            return {
+                css: _cache.css,
+                name: _cache.name,
+                cache: true
+            }
+        }
+        return _cache.name
+    }
 
+    const id = uid(cache_key)
+    const baseClass = (options?.classPrefix || "css-") + id
+
+    if (typeof window !== 'undefined' && window.document) {
+        const has = window.document.querySelector(`[data-naxcss="${baseClass}"]`)
+        if (has) {
+            CSS_CACHE.set(cache_key, {
+                name: baseClass,
+                css: has.innerHTML,
+                css_raw: _css
+            })
+            if (options?.return) {
+                return {
+                    css: has.innerHTML,
+                    name: baseClass,
+                    cache: false
+                }
+            }
+
+            return baseClass
+        }
+    }
+
+    const generated = renderCss(_css, baseClass, options).reverse().join('')
+    options?.getCss && options.getCss(generated)
+    CSS_CACHE.set(cache_key, {
+        name: baseClass,
+        css: generated,
+        css_raw: _css
+    })
+
+    if (options?.return) {
+        return {
+            css: generated,
+            name: baseClass,
+            cache: false
+        }
+    }
+    injectStyle(generated, baseClass)
+    return baseClass
+}
 
 export const keyframes = (framesObject: keyframesType, options?: OptionsProps) => {
-	const cacheKey = (options?.cachePrefix || "") + "keyframes_" + JSON.stringify(framesObject)
-	let _cache = CACHE.get(cacheKey)
-	if (_cache) {
-		options?.getCss && options.getCss(_cache.css)
-		return _cache.classname
-	}
+    const cache_key = makeCacheKey(framesObject, options)
+    let _cache = CSS_CACHE.get(cache_key)
 
-	let all_frames: any = {}
-	const id = Math.random().toString(36).substring(2, 8)
+    if (_cache) {
+        options?.getCss && options.getCss(_cache.css)
+        if (options?.return) {
+            return {
+                css: _cache.css,
+                name: _cache.name,
+                cache: true
+            }
+        }
+        return _cache.name
+    }
 
-	for (let frameKey in framesObject) {
-		const _css = framesObject[frameKey]
-		const generated = generateCss(_css, id, defAliases, options).reverse()
-		for (let i = 0; i < generated.length; i++) {
-			const item = generated[i]
-			const generated_class_name = item.split('{')[0]
-			const animname: string = generated_class_name.replace(/ |\./g, '_')
-			if (!all_frames[animname]) {
-				all_frames[animname] = {
-					frames: [],
-					classname: generated_class_name.replace('.', '')
-				}
-			}
-			all_frames[animname].frames.push(`${frameKey}${item.replace(generated_class_name, '')}`)
-		}
-	}
-	let gen_frames = ''
-	let gen_anim_css: any = {}
-	for (let animname in all_frames) {
-		const item = all_frames[animname]
-		gen_frames += `@keyframes ${animname}{${item.frames.join('')}}`
-		if (item.classname === id) {
-			gen_anim_css['animationName'] = animname
-		} else {
-			const selector = "& " + item.classname.replace(id, '')
-			if (!gen_anim_css[selector]) {
-				gen_anim_css[selector] = {}
-			}
-			gen_anim_css[selector]["animationName"] = animname
-		}
-	}
+    let frames = ""
+    const id = uid(cache_key)
+    const baseClass = (options?.classPrefix || "css-") + id
 
-	injectStyle(gen_frames);
-	options?.getCss && options.getCss(gen_frames + " " + gen_anim_css)
-	const cls = css(gen_anim_css)
-	CACHE.set(cacheKey, {
-		classname: cls,
-		css: gen_frames
-	})
-	return cls
+    if (typeof window !== 'undefined' && window.document) {
+        const has = window.document.querySelector(`[data-naxcss="${baseClass}"]`)
+        if (has) {
+            CSS_CACHE.set(cache_key, {
+                name: baseClass,
+                css: has.innerHTML,
+                css_raw: framesObject
+            })
+            if (options?.return) {
+                return {
+                    css: has.innerHTML,
+                    name: baseClass,
+                    cache: false
+                }
+            }
+            return baseClass
+        }
+    }
+
+    for (let frameKey in framesObject) {
+        const _css = framesObject[frameKey]
+        const generated = renderCss(_css, baseClass, options).reverse()
+        const main = generated[0]
+        frames += `${frameKey}${main.replace("." + baseClass, '')}`
+    }
+
+    let _css = `@keyframes ${baseClass}{${frames}}`
+    options?.getCss && options.getCss(_css)
+    CSS_CACHE.set(cache_key, {
+        name: baseClass,
+        css: _css,
+        css_raw: framesObject
+    })
+    if (options?.return) {
+        return {
+            css: _css,
+            name: baseClass,
+            cache: false
+        }
+    }
+
+    injectStyle(_css, baseClass);
+    return baseClass
 }
 
 
 export const alpha = (hex: string, opacity: number) => {
-	return hex + Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255).toString(16).toUpperCase();
+    return hex + Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255).toString(16).toUpperCase();
 }
