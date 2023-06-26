@@ -1,17 +1,8 @@
 import { CSSProps, OptionsProps, CACHE_TYPE } from './types';
-
-export const uid = (input: string) => {
-    var hash = 0, i, chr, len;
-    for (i = 0, len = input.length; i < len; i++) {
-        chr = input.charCodeAt(i);
-        hash = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
-    }
-    return hash
-}
+import { NAXCSS_CACHE } from './core'
 
 
-export const CSS_CACHE = new Map<string, CACHE_TYPE>();
+export const uid = () => Math.random().toString(36).substring(2, 12)
 
 /**
  * Js Prop to Css Prop -> fontSize to font-size
@@ -40,10 +31,18 @@ const number_val_props = [
     "flex-grow"
 ]
 
-export const formatValue = (prop: string, val: any): string => {
+export const formatValue = (prop: string, val: any) => {
     return typeof val === 'number' && !number_val_props.includes(prop) ? `${val}px` : val
 }
 
 export const makeCacheKey = <P = {}>(_css: CSSProps<P>, options?: OptionsProps) => {
     return (options?.cachePrefix || "") + JSON.stringify(_css)
+}
+
+export const loadServerCache = (options?: OptionsProps) => {
+    if (typeof window !== 'undefined' && (window as any).NAXCSS_CACHE_SERVER?.cache && Array.isArray((window as any).NAXCSS_CACHE_SERVER.cache)) {
+        const ssr_css: CACHE_TYPE[] = (window as any).NAXCSS_CACHE_SERVER.cache
+        ssr_css.forEach(c => NAXCSS_CACHE.set(makeCacheKey(c.css_raw, options), c))
+        delete (window as any).NAXCSS_CACHE_SERVER;
+    }
 }

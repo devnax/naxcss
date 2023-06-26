@@ -3,7 +3,7 @@ import * as CSS from 'csstype'
 export type CSSProps<P = {}> =
    | string
    | number
-   | { [x: string]: CSSProps<P | {}> }
+   | { [x: string]: CSSProps<P> }
    | CSS.Properties
    | P;
 
@@ -11,16 +11,17 @@ export type keyframesType<P = {}> = { [x: string]: CSSProps<P> }
 
 export type CACHE_TYPE = {
    css: string;
-   name: string;
+   classname: string;
    css_raw: CSSProps<any>;
 }
 
 export type AliasFN = <P = {}>(v: any, k: string) => Partial<CSSProps<P>>;
 export type AliasObjectType<P = {}> = { [key in keyof P]: AliasFN };
+
 export type getAlisesProps = { [key: string]: any }
 
 export interface OptionsProps<P = {}> {
-   return?: boolean;
+   return_css?: boolean;
    classPrefix?: string;
    cachePrefix?: string;
    breakpoints?: { [key: string]: number };

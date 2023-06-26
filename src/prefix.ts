@@ -2,7 +2,7 @@ const PREFIXES = ['webkit', 'moz', 'ms', 'o']
 let _declaration: CSSStyleDeclaration;
 const CACHE = new Map()
 
-const ucf = (t: string) => t.substr(0, 1).toUpperCase() + t.substr(1)
+const ucf = (t: string) => t.substring(0, 1).toUpperCase() + t.substring(1)
 
 // prop -> must be font-size 
 export const cssPrefix = (prop: string, value: string): { prop: string, value: string } => {

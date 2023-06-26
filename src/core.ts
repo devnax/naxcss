@@ -1,6 +1,10 @@
 import { cssPrefix } from "./prefix"
 import { formatValue, formatProp } from "./utils";
-import { CSSProps, OptionsProps } from './types';
+import { CSSProps, OptionsProps, CACHE_TYPE } from './types';
+
+export const NAXCSS_CACHE = new Map<string, CACHE_TYPE>();
+
+
 /**
  * this function formate css prop and value and also call alias, getValue, getProps
  * then return an object with prop key and valu string css
@@ -33,8 +37,7 @@ export const formatCss = (js_prop: string, value: string | number, options?: Opt
 
 
     if (options?.aliases) {
-        const aliases: any = options.aliases
-        const alias_cb = aliases[js_prop]
+        const alias_cb = options.aliases[js_prop]
         const alias_ob = alias_cb && alias_cb(value)
         if (alias_ob) {
             let formated: any = {}
@@ -43,18 +46,13 @@ export const formatCss = (js_prop: string, value: string | number, options?: Opt
                 if (options?.getValue) {
                     val = options.getValue(val, as_prop) || val
                 }
-                val = formatValue(js_prop, val) // val could be number val
-
-                const prefix = cssPrefix(as_prop, val)
+                const prefix = cssPrefix(as_prop, formatValue(js_prop, val))
                 formated[prefix.prop] = `${prefix.prop}:${prefix.value};`
             }
             return formated
         }
     }
-    value = formatValue(js_prop, value) // val could be number val
-    let prop = formatProp(js_prop) // font-size
-    const prefix = cssPrefix(prop, value)
-
+    const prefix = cssPrefix(formatProp(js_prop), formatValue(js_prop, value))
     return {
         [prefix.prop]: `${prefix.prop}:${prefix.value};`
     }
@@ -64,18 +62,13 @@ export const formatCss = (js_prop: string, value: string | number, options?: Opt
 const formateBreakPoints = (js_prop: string, value: { [key: string]: any }, options?: OptionsProps) => {
     if (typeof value === "object" && !Array.isArray(value) && options?.breakpoints) {
         const breakpoints = options.breakpoints
-        const breakpointKeys = Object.keys(breakpoints)
         let formated_css: any = {} // {400: formatCss->string}
-
         for (let bp_name in value) {
-            if (!breakpointKeys.includes(bp_name)) {
+            if (!Object.keys(breakpoints).includes(bp_name)) {
                 throw new Error(`Invalid css value: ${value}`);
             }
-
-            const breakpoint_num = breakpoints[bp_name]
-            formated_css[breakpoint_num] = Object.values(formatCss(js_prop, value[bp_name], options)).join("")
+            formated_css[breakpoints[bp_name]] = Object.values(formatCss(js_prop, value[bp_name], options)).join("")
         }
-
         return formated_css
     }
 }
@@ -89,7 +82,7 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
     let medias: any = {} // {500: [], 800: []}
     let formated_css: any = {}
 
-    for (let prop in _css as object) {
+    for (let prop in _css) {
         const value = (_css as any)[prop]
         if (prop.startsWith("&")) {
             stack = [
