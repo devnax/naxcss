@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { css, keyframes, animation } from '../src'
+import { css, keyframes } from '../src'
 // import { css } from '@emotion/css'
 
 const parformance = () => {
@@ -74,39 +74,14 @@ const parformance = () => {
 
 
 const App = () => {
-	const [show, setShow] = React.useState(false)
-	const [animcls, setAnimCls] = React.useState('')
-	const ref: any = React.useRef()
-
-	React.useEffect(() => {
-		ref.current = animation({
-			duration: 500,
-			init: {
-				scale: 1.2,
-			},
-			enter: {
-				scale: 1,
-				skew: 10
-			},
-			exit: {
-				scale: 1.2,
-				opacity: 0
-			},
-			// exited: {
-			// 	bgcolor: "green"
-			// }
-		}, ({ type, classname }) => {
-			setAnimCls(classname)
-			if (type === 'enter') {
-				setShow(true)
-			} else if (type === 'exited') {
-				setShow(false)
-			}
-		})
-	}, [])
-
 
 	const _options = {
+		beforeRender: (prop, val) => {
+			if (prop === 'borderRadius') {
+				return undefined
+			}
+			return val
+		},
 		breakpoints: {
 			sm: 700,
 			md: 900,
@@ -120,7 +95,6 @@ const App = () => {
 		}
 	}
 
-
 	const cls = css({
 		borderRadius: 100,
 		display: "flex",
@@ -129,31 +103,17 @@ const App = () => {
 		margin: "100px auto",
 		position: "fixed",
 		left: "50%",
+		transform: "translateX(-50%)",
 		top: 100,
 		width: 200,
 		bgcolor: "red",
 		height: 200,
 	}, _options)
 
-	const btn = css({
-		bgcolor: "red",
-		fontSize: 10
-	}, _options)
 
 	return (
 		<div className={cls}>
-			{
-				show && <div className={cls + " " + animcls}>
 
-				</div>
-			}
-
-			<button className={btn} onClick={() => {
-				ref.current.in()
-			}}>In</button>
-			<button onClick={() => {
-				ref.current.out()
-			}}>out</button>
 		</div>
 	);
 };
