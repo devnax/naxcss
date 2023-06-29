@@ -111,11 +111,11 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
                 }
             }
         }
-
     }
-
-
-    stack.push(`${baseClass ? "." + baseClass : ""}{${Object.values(formated_css).join("")}}`)
+    const values = Object.values(formated_css).join("")
+    if (values) {
+        stack.push(`${baseClass ? "." + baseClass : ""}{${Object.values(formated_css).join("")}}`)
+    }
 
     const brkpoin_nums = Object.keys(medias).sort((a: any, b: any) => a - b).reverse();
 

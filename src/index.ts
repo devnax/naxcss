@@ -33,22 +33,25 @@ export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
     }
 
     const baseClass = (options?.classPrefix || "css-") + uid()
-    const generated = renderCss(_css, baseClass, options).reverse().join('')
-    options?.getCss && options.getCss(generated)
+    const rendered = renderCss(_css, baseClass, options).reverse()
+    const cssstring = rendered.join('')
+    options?.getCss && options.getCss(cssstring)
     NAXCSS_CACHE.set(cache_key, {
         classname: baseClass,
-        css: generated,
+        css: cssstring,
         css_raw: _css
     })
 
     if (options?.return_css) {
         return {
-            css: generated,
+            css: cssstring,
             classname: baseClass,
             cache: false
         }
     }
-    injectStyle(generated, baseClass)
+    if (rendered.length) {
+        injectStyle(cssstring, baseClass)
+    }
     return baseClass
 }
 
