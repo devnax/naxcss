@@ -6,7 +6,7 @@ import { css, keyframes } from '../src'
 const parformance = () => {
 	const before = Date.now();
 	for (let i = 0; i < 300; i++) {
-		css({
+		css<{}>({
 			border: i,
 			bgcolor: "red",
 			'& div': {
@@ -94,6 +94,7 @@ const App = () => {
 			}
 		}
 	}
+
 
 	const cls = css({
 		borderRadius: 100,

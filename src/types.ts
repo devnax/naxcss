@@ -4,7 +4,8 @@ export type CSSProps<P = {}> =
    | { [x: string]: CSSProps<P> }
    | string
    | number
-   | CSS.Properties<P>
+   | CSS.Properties
+   | P
 
 export type keyframesType<P = {}> = { [x: string]: CSSProps<P> }
 
