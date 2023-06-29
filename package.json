@@ -1,11 +1,18 @@
 {
-  "version": "2.1.9",
+  "version": "2.2.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
+  ],
+  "keywords": [
+    "css",
+    "css in js",
+    "style",
+    "react",
+    "naxcss"
   ],
   "engines": {
     "node": ">=10"
