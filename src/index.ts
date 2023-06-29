@@ -15,7 +15,7 @@ export const injectStyle = (_css: string, baseClass: string) => {
     }
 }
 
-export const css = <P extends {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
+export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
     loadServerCache(options)
     const cache_key = makeCacheKey(_css, options)
     let _cache = NAXCSS_CACHE.get(cache_key)
