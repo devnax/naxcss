@@ -1,11 +1,10 @@
 import * as CSS from 'csstype'
 
 export type CSSProps<P = {}> =
+   | { [x: string]: CSSProps<P> }
    | string
    | number
-   | { [x: string]: CSSProps<P> }
-   | CSS.Properties
-   | P;
+   | CSS.Properties<P>
 
 export type keyframesType<P = {}> = { [x: string]: CSSProps<P> }
 
@@ -26,7 +25,8 @@ export interface OptionsProps<P = {}> {
    cachePrefix?: string;
    breakpoints?: { [key: string]: number };
    aliases?: getAlisesProps;
+   beforeRender?: (prop: string, value: string) => CSSProps<P> | void;
    getCss?: (_css: string) => void;
    getValue?: (value: string | number, prop: string) => (string | number);
-   getProps?: (prop: string, value: string) => CSSProps<P> | void
+   getProps?: (prop: string, value: string) => CSSProps<P> | void;
 }

@@ -122,6 +122,20 @@ const option = {
    };
 
 
+   // This method call before render process is start. In the callback you will have the prop and value. If you return undefined then the prop will be escap to render or if you return value or css style object then that will be process.
+   beforeRender: (prop, val) => {
+      if(prop === 'abc'){
+         return undefined
+      }
+      if(prop === "typo"){
+         return {
+            fontSize: 20,
+            color: "red"
+         }
+      }
+      return val
+   },
+
    // this method will call when css is ready. If you want get the css string then you can us this.
    getCss: (css_stirng) => {
 

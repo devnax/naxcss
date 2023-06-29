@@ -82,8 +82,14 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
     let medias: any = {} // {500: [], 800: []}
     let formated_css: any = {}
 
-    for (let prop in _css) {
-        const value = (_css as any)[prop]
+    for (let prop in _css as any) {
+        let value = (_css as any)[prop]
+        if (options?.beforeRender) {
+            value = options.beforeRender(prop, value)
+            if (value === undefined) {
+                continue;
+            }
+        }
         if (prop.startsWith("&")) {
             stack = [
                 ...stack,
