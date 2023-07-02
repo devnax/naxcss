@@ -8,7 +8,7 @@ export const uid = (str: string) => {
         hash = ((hash << 5) - hash) + str.charCodeAt(i);
         hash |= 0;
     }
-    return hash.toString(32);
+    return hash.toString(32).slice(-10);
 }
 
 /**
