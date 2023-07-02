@@ -2,7 +2,14 @@ import { CSSProps, OptionsProps, CACHE_TYPE } from './types';
 import { NAXCSS_CACHE } from './core'
 
 
-export const uid = () => Math.random().toString(36).substring(2, 12)
+export const uid = (str: string) => {
+    var hash = 0, len = str.length;
+    for (var i = 0; i < len; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+    }
+    return hash.toString(32);
+}
 
 /**
  * Js Prop to Css Prop -> fontSize to font-size

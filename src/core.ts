@@ -84,12 +84,6 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
 
     for (let prop in _css as any) {
         let value = (_css as any)[prop]
-        if (options?.beforeRender) {
-            value = options.beforeRender(prop, value)
-            if (value === undefined) {
-                continue;
-            }
-        }
         if (prop.startsWith("&")) {
             stack = [
                 ...stack,

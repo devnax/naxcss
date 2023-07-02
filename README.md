@@ -31,7 +31,7 @@ const box = document.getElementById('box')
 const classname = css({
    background: "red"
 })
-app.classList.add(classname)
+box.classList.add(classname)
 ```
 
 ## API
@@ -98,7 +98,7 @@ const option = {
    classPrefix: "css-",
 
    // the cachePrefix is a prefix for the cache key. every css render has a unique cache key and there add the cachePrefix. If you change the cachePrefix conditionally then another cache will create. 
-   cachePrefix: string,
+   cachePrefix: "",
 
    // You can use it for your responsive breakpoint. you can define your screen size with a name then it will work for your responsive design.
    breakpoints: { 
@@ -121,25 +121,6 @@ const option = {
       }
    };
 
-
-   // This method call before render process is start. In the callback you will have the prop and value. If you return undefined then the prop will be escap to render or if you return value or css style object then that will be process.
-   beforeRender: (prop, val) => {
-      if(prop === 'abc'){
-         return undefined
-      }
-      if(prop === "typo"){
-         return {
-            fontSize: 20,
-            color: "red"
-         }
-      }
-      return val
-   },
-
-   // this method will call when css is ready. If you want get the css string then you can us this.
-   getCss: (css_stirng) => {
-
-   };
 
    // The getValue method give you to customize your css value. This method will call when the css value is rendering and you have to return a new value. like the css value is {background: "primary"}
    getValue: (value, prop) => {
@@ -214,16 +195,14 @@ for the `NextJs` example you can do this. In your _document root file  you can u
 
 ```js
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { NAXCSS_CACHE } from '@src/naxcss'
+import { NAXCSS_CACHE } from 'naxcss'
 
 export default class MyDocument extends Document {
 
     render() {
         let css: any = []
-        let _css_cache: any = []
 
         NAXCSS_CACHE.forEach((c, idx) => {
-            _css_cache.push(c)
             css.push(<style
                 key={c.classname + idx}
                 data-naxcss={c.classname}
@@ -235,7 +214,6 @@ export default class MyDocument extends Document {
             <Html lang="en">
                 <Head>
                     {css}
-                    <link rel="shortcut icon" href="/favicon.ico" />
                     <script
                         dangerouslySetInnerHTML={{
                             __html: `

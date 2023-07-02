@@ -1,11 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { css, keyframes } from '../src'
+import { css } from '../src'
 // import { css } from '@emotion/css'
 
 const parformance = () => {
 	const before = Date.now();
-	for (let i = 0; i < 300; i++) {
+	let limit = 2000
+	for (let i = 0; i < limit; i++) {
 		css<{}>({
 			border: i,
 			bgcolor: "red",
@@ -67,7 +68,7 @@ const parformance = () => {
 		})
 	}
 	const after = Date.now();
-	console.log('loop 20000 in ', (after - before) / 1000);
+	console.log(`loop ${limit} in `, (after - before) / 1000);
 }
 // parformance()
 

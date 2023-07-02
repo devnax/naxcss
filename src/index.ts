@@ -17,11 +17,10 @@ export const injectStyle = (_css: string, baseClass: string) => {
 
 export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
     loadServerCache(options)
-    const cache_key = makeCacheKey(_css, options)
+    let cache_key = makeCacheKey(_css, options);
     let _cache = NAXCSS_CACHE.get(cache_key)
 
     if (_cache) {
-        options?.getCss && options.getCss(_cache.css)
         if (options?.return_css) {
             return {
                 css: _cache.css,
@@ -32,10 +31,9 @@ export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
         return _cache.classname
     }
 
-    const baseClass = (options?.classPrefix || "css-") + uid()
+    const baseClass = (options?.classPrefix || "css-") + uid(cache_key)
     const rendered = renderCss(_css, baseClass, options).reverse()
     const cssstring = rendered.join('')
-    options?.getCss && options.getCss(cssstring)
     NAXCSS_CACHE.set(cache_key, {
         classname: baseClass,
         css: cssstring,
@@ -61,7 +59,6 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
     let _cache = NAXCSS_CACHE.get(cache_key)
 
     if (_cache) {
-        options?.getCss && options.getCss(_cache.css)
         if (options?.return_css) {
             return {
                 css: _cache.css,
@@ -73,14 +70,13 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
     }
 
     let frames = ""
-    const baseClass = (options?.classPrefix || "css-") + uid()
+    const baseClass = (options?.classPrefix || "css-") + uid(cache_key)
     for (let frameKey in framesObject) {
         const generated = renderCss(framesObject[frameKey], baseClass, options).reverse()
         frames += `${frameKey}${generated[0].replace("." + baseClass, '')}`
     }
 
     let _css = `@keyframes ${baseClass}{${frames}}`
-    options?.getCss && options.getCss(_css)
     NAXCSS_CACHE.set(cache_key, {
         classname: baseClass,
         css: _css,

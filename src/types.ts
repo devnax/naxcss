@@ -26,8 +26,6 @@ export interface OptionsProps<P = {}> {
    cachePrefix?: string;
    breakpoints?: { [key: string]: number };
    aliases?: getAlisesProps;
-   beforeRender?: (prop: string, value: string) => CSSProps<P> | void;
-   getCss?: (_css: string) => void;
    getValue?: (value: string | number, prop: string) => (string | number);
-   getProps?: (prop: string, value: string) => CSSProps<P> | void;
+   getProps?: (prop: string, value: string | number) => CSSProps<P> | void;
 }
