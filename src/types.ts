@@ -29,3 +29,8 @@ export interface OptionsProps<P = {}> {
    getValue?: (value: string | number, prop: string) => (string | number);
    getProps?: (prop: string, value: string | number) => CSSProps<P> | void;
 }
+
+
+export type GlobalCSSType<P> = {
+   [t: string]: CSSProps<P>
+}

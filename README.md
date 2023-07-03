@@ -7,6 +7,7 @@ The [naxcss](https://www.npmjs.com/package/naxcss) package is a very lightweight
 - [Quick Start](#quick-start)
 - API
   - [Generate Class Names — `css`](#css)
+  - [Global CSS — `globalCss`](#css)
   - [Animation Keyframes — `keyframes`](#animation-keyframes)
   - [Options](#options)
   - [alpha color — `alpha`](#alpha)
@@ -38,13 +39,13 @@ box.classList.add(classname)
 
 ### css
 
-The `css` function accepts styles as an object and returns a class name or css.
+The `css` function accepts styles as an `object` and `option`, and returns a class name or css.
 
-```jsx
+```tsx
 import { css } from 'naxcss '
 
 const App = () => {
-   const cls = css({
+   const cls = css<ExtraType>({
       backgroundColor: 'orange',
       '&:hover': {
         color: "red"
@@ -59,12 +60,30 @@ const App = () => {
 
 ```
 
+### globalCss
+Globally inject css. The `globalCss` function accepts `key`, styles as an `object`, `option`. The `key` is the identifier for the style tag .
+
+```ts
+import { globalCss } from 'naxcss '
+
+globalCss<Type>("any-unique-key", {
+   "body": {
+      background: "red"
+   },
+   "*": {
+      margin: 0,
+      padding: 0,
+      listStyle: "none"
+   }
+}, option)
+
+```
+
 ### Animation Keyframes
 
 The `keyframes` function accepts an object where the key will be number and the value will be style object and that returns a class name or css.
 
 ```jsx
-// @live
 import { css, keyframes } from 'naxcss'
 
 const clsname = keyframes(

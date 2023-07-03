@@ -1,5 +1,5 @@
 import { renderCss, NAXCSS_CACHE } from "./core";
-import { CSSProps, keyframesType, OptionsProps } from "./types";
+import { CSSProps, keyframesType, OptionsProps, GlobalCSSType } from "./types";
 import { loadServerCache, makeCacheKey, uid } from "./utils";
 export * from './core'
 export * from './types'
@@ -22,17 +22,14 @@ export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
 
     if (_cache) {
         if (options?.return_css) {
-            return {
-                css: _cache.css,
-                classname: _cache.classname,
-                cache: true
-            }
+            return _cache
         }
         return _cache.classname
     }
 
     const baseClass = (options?.classPrefix || "css-") + uid(cache_key)
     const rendered = renderCss(_css, baseClass, options).reverse()
+
     const cssstring = rendered.join('')
     NAXCSS_CACHE.set(cache_key, {
         classname: baseClass,
@@ -44,13 +41,27 @@ export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
         return {
             css: cssstring,
             classname: baseClass,
-            cache: false
+            css_raw: _css
         }
     }
     if (rendered.length) {
         injectStyle(cssstring, baseClass)
     }
     return baseClass
+}
+
+
+export const globalCss = <P>(key: string, _gcss: GlobalCSSType<P>, options?: OptionsProps) => {
+    let rendered = ""
+    for (let key in _gcss) {
+        const _css = _gcss[key]
+        const render_cls = css(_css, {
+            ...options,
+            return_css: true
+        })
+        rendered += render_cls.css.replaceAll("." + render_cls.classname, key)
+    }
+    rendered && injectStyle(rendered, key)
 }
 
 export const keyframes = (framesObject: keyframesType, options?: OptionsProps) => {

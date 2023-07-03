@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { css } from '../src'
+import { css, globalCss } from '../src'
 // import { css } from '@emotion/css'
 
 const parformance = () => {
@@ -96,8 +96,14 @@ const App = () => {
 		}
 	}
 
+	globalCss<{}>("global", {
+		"*": {
+			margin: 0,
+			padding: 0
+		}
+	})
 
-	const cls = css({
+	const cls = css<{}>({
 		borderRadius: 100,
 		display: "flex",
 		justifyContent: "center",
@@ -110,6 +116,9 @@ const App = () => {
 		width: 200,
 		bgcolor: "red",
 		height: 200,
+		"& :root": {
+			background: "red"
+		}
 	}, _options)
 
 
