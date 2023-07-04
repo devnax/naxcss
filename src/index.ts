@@ -91,6 +91,10 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
     return baseClass
 }
 
-export const alpha = (hex: string, opacity: number) => {
-    return hex + Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255).toString(16).toUpperCase();
+
+export const alpha = (color: string, opacity: number) => {
+    opacity = opacity > 10 ? 10 : opacity;
+    opacity = opacity < 0 ? 0 : opacity;
+    opacity = opacity * 10;
+    return `color-mix(in srgb, ${color} ${opacity}%, transparent);`
 }
