@@ -218,36 +218,37 @@ import { NAXCSS_CACHE } from 'naxcss'
 
 export default class MyDocument extends Document {
 
-    render() {
-        let css: any = []
+   render() {
+      let css: any = []
+      let css_cache: any = []
+      NAXCSS_CACHE.forEach((c, idx) => {
+         css_cache.push(c)
+         css.push(<style
+            key={c.classname + idx}
+            data-naxcss={c.classname}
+            dangerouslySetInnerHTML={{ __html: c.css }}
+         />)
+      })
 
-        NAXCSS_CACHE.forEach((c, idx) => {
-            css.push(<style
-                key={c.classname + idx}
-                data-naxcss={c.classname}
-                dangerouslySetInnerHTML={{ __html: c.css }}
-            />)
-        })
+      return (
+         <Html lang="en">
+             <Head>
+                 {css}
+                 <script
+                     dangerouslySetInnerHTML={{
+                         __html: `
+                           window.NAXCSS_CACHE_SERVER = ${JSON.stringify({ cache: css_cache })};
+                         `,
+                     }} />
 
-        return (
-            <Html lang="en">
-                <Head>
-                    {css}
-                    <script
-                        dangerouslySetInnerHTML={{
-                            __html: `
-                              window.NAXCSS_CACHE_SERVER = ${JSON.stringify({ cache: _css_cache })};
-                            `,
-                        }} />
-
-                </Head>
-                <body>
-                    <Main />
-                    <NextScript />
-                </body>
-            </Html>
-        );
-    }
+             </Head>
+             <body>
+                 <Main />
+                 <NextScript />
+             </body>
+         </Html>
+     );
+   }
 }
 
 

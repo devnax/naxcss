@@ -1,4 +1,4 @@
-import { CACHE_TYPE } from "naxcss";
+import { CACHE_TYPE } from "./types";
 import { renderCss, NAXCSS_CACHE } from "./core";
 import { CSSProps, keyframesType, OptionsProps, GlobalCSSType } from "./types";
 import { loadServerCache, makeCacheKey, uid } from "./utils";
