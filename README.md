@@ -2,6 +2,8 @@
 
 The [naxcss](https://www.npmjs.com/package/naxcss) package is a very lightweight css framework. This is a performant and flexible CSS-in-JS library that allows developers to write CSS styles using JavaScript. It provides a way to encapsulate styles within JavaScript components, making it easier to manage and manipulate styles dynamically.
 
+> If you want to develop you own custom UI library then you can use the [naxui-manager](https://www.npmjs.com/package/naxui-manager)
+
 ## Table of Contents
 
 - [Quick Start](#quick-start)
@@ -10,6 +12,7 @@ The [naxcss](https://www.npmjs.com/package/naxcss) package is a very lightweight
   - [Global CSS — `globalCss`](#css)
   - [Animation Keyframes — `keyframes`](#animation-keyframes)
   - [Options](#options)
+  - [Responsive](#responsive)
   - [alpha color — `alpha`](#alpha)
 - [Caching - `NAXCSS_CACHE`](#naxcss_cache)
   - [Make Cache Key — `makeCacheKey`](#make-cache-key)
@@ -53,7 +56,7 @@ const App = () => {
    })
    return(
      <div className={cls} >
-       This has a hotpink background.
+       This has a orange background.
      </div>
    )
 }
@@ -169,6 +172,30 @@ const cls = css({}, option)
 
 ```
 
+
+
+## Responsive
+How you can wite responsive css. It's very simple to responsive any ui. remember you must need to add breakpoints in the css option. then the key which you add in breakpoint that you can use to responsive.
+
+```jsx
+import { css } from 'naxcss '
+
+const App = () => {
+   const cls = css<ExtraType>({
+      backgroundColor: {
+         xs: "red",
+         sm: "green",
+         // and so
+      },
+   })
+   return(
+     <div className={cls} >
+       Hello world
+     </div>
+   )
+}
+
+```
 
 
 ## Alpha
