@@ -52,7 +52,7 @@ export const globalCss = <P>(key: string, _gcss: GlobalCSSType<P>, options?: Opt
         cssstring += renderCss(_gcss[key], key, options).reverse().join('').replaceAll("." + key, key)
     }
     NAXCSS_CACHE.set(key, {
-        classname: 'global',
+        classname: key,
         css: cssstring,
         css_raw: _gcss
     })
