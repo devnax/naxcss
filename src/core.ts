@@ -27,7 +27,7 @@ export const formatCss = (js_prop: string, value: string | number, _css: CSSProp
                 if (typeof p_val === 'string' || typeof p_val === "object") {
                     formated = {
                         ...formated,
-                        ...formatCss(p_prop, p_val, { ...options, getProps: undefined })
+                        ...formatCss(p_prop, p_val, _css, { ...options, getProps: undefined })
                     }
                 }
             }
@@ -59,7 +59,7 @@ export const formatCss = (js_prop: string, value: string | number, _css: CSSProp
 
 }
 
-const formateBreakPoints = (js_prop: string, value: { [key: string]: any }, options?: OptionsProps) => {
+const formateBreakPoints = (js_prop: string, value: { [key: string]: any }, _css: CSSProps, options?: OptionsProps) => {
     if (typeof value === "object" && !Array.isArray(value) && options?.breakpoints) {
         const breakpoints = options.breakpoints
         let formated_css: any = {} // {400: formatCss->string}
@@ -67,7 +67,7 @@ const formateBreakPoints = (js_prop: string, value: { [key: string]: any }, opti
             if (!Object.keys(breakpoints).includes(bp_name)) {
                 throw new Error(`Invalid css value: ${value}`);
             }
-            formated_css[breakpoints[bp_name]] = Object.values(formatCss(js_prop, value[bp_name], options)).join("")
+            formated_css[breakpoints[bp_name]] = Object.values(formatCss(js_prop, value[bp_name], _css, options)).join("")
         }
         return formated_css
     }
@@ -90,7 +90,7 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
                 ...renderCss(value, prop.replace('&', baseClass), options)
             ]
         } else {
-            const media = formateBreakPoints(prop, value, options)
+            const media = formateBreakPoints(prop, value, _css as any, options)
             if (media) {
                 for (let brkpoin_num in media) {
                     if (!medias[brkpoin_num]) {
