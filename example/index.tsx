@@ -90,7 +90,7 @@ const App = () => {
 			xs: 500,
 		},
 		getProps: (p, v) => {
-			if (p === 'bgcolor') {
+			if (p === 'type') {
 				return { fontSize: 20, color: "red", background: "green" }
 			}
 		}
@@ -104,27 +104,15 @@ const App = () => {
 	})
 
 	const cls = css<{}>({
-		borderRadius: 100,
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		margin: "100px auto",
-		position: "fixed",
-		left: "50%",
-		transform: "translateX(-50%)",
-		top: 100,
-		width: 200,
-		bgcolor: "red",
+		type: "red",
 		height: 200,
-		"& :root": {
-			background: "red"
-		}
+		color: "#fff"
 	}, _options)
 
 
 	return (
 		<div className={cls}>
-
+			wellcome
 		</div>
 	);
 };

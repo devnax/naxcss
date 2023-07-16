@@ -24,7 +24,7 @@ export const formatCss = (js_prop: string, value: string | number, _css: CSSProp
             let formated = {}
             for (let p_prop in props_ob) {
                 let p_val = props_ob[p_prop]
-                if (typeof p_val === 'string' || typeof p_val === "object") {
+                if (typeof p_val === 'string' || typeof p_val === 'number') {
                     formated = {
                         ...formated,
                         ...formatCss(p_prop, p_val, _css, { ...options, getProps: undefined })
