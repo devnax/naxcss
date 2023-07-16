@@ -145,14 +145,14 @@ const option = {
 
 
    // The getValue method give you to customize your css value. This method will call when the css value is rendering and you have to return a new value. like the css value is {background: "primary"}
-   getValue: (value, prop) => {
+   getValue: (value, prop, _css) => {
       if(value === 'primary'){
          return "your primary color"
       }
    },
 
    // With this method you can use a template with css key or value.
-   getProps: (prop, value) =>{
+   getProps: (prop, value, _css) =>{
       if(value === "h1"){
          return {
             fontSize: 44,

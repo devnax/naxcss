@@ -13,13 +13,13 @@ export const NAXCSS_CACHE = new Map<string, CACHE_TYPE>();
  * @param options 
  * @returns {fontSize: "font-size: 10px;", ...}
  */
-export const formatCss = (js_prop: string, value: string | number, options?: OptionsProps) => {
+export const formatCss = (js_prop: string, value: string | number, _css: CSSProps, options?: OptionsProps) => {
     if (options?.getValue) {
-        value = options.getValue(value, js_prop) || value
+        value = options.getValue(value, js_prop, _css) || value
     }
 
     if (options?.getProps) {
-        const props_ob: any = options.getProps(js_prop, value as any)
+        const props_ob: any = options.getProps(js_prop, value as any, _css)
         if (props_ob && typeof props_ob == 'object') {
             let formated = {}
             for (let p_prop in props_ob) {
@@ -44,7 +44,7 @@ export const formatCss = (js_prop: string, value: string | number, options?: Opt
             for (let as_prop in alias_ob) {
                 let val = alias_ob[as_prop]
                 if (options?.getValue) {
-                    val = options.getValue(val, as_prop) || val
+                    val = options.getValue(val, as_prop, _css) || val
                 }
                 const prefix = cssPrefix(as_prop, formatValue(js_prop, val))
                 formated[prefix.prop] = `${prefix.prop}:${prefix.value};`
@@ -101,7 +101,7 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
             } else {
                 formated_css = {
                     ...formated_css,
-                    ...formatCss(prop, value, options)
+                    ...formatCss(prop, value, _css as any, options)
                 }
             }
         }
