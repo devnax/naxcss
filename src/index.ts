@@ -1,7 +1,7 @@
 import { CACHE_TYPE } from "./types";
 import { renderCss, NAXCSS_CACHE } from "./core";
 import { CSSProps, keyframesType, OptionsProps, GlobalCSSType } from "./types";
-import { loadServerCache, makeCacheKey, uid } from "./utils";
+import { makeCacheKey, uid } from "./utils";
 export * from './core'
 export * from './types'
 export * from './utils'
@@ -17,7 +17,6 @@ export const injectStyle = (_css: string, baseClass: string) => {
 }
 
 export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
-    loadServerCache(options)
     let cache_key = makeCacheKey(_css, options);
     let _cache = NAXCSS_CACHE.get(cache_key)
     if (_cache) {
@@ -42,7 +41,6 @@ export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
 
 
 export const globalCss = <P>(key: string, _gcss: GlobalCSSType<P>, options?: OptionsProps): CACHE_TYPE | void => {
-    loadServerCache(options)
     let _cache: any = NAXCSS_CACHE.get(key)
     if (_cache) {
         return options?.return_css ? _cache : undefined;
@@ -63,7 +61,6 @@ export const globalCss = <P>(key: string, _gcss: GlobalCSSType<P>, options?: Opt
 }
 
 export const keyframes = (framesObject: keyframesType, options?: OptionsProps) => {
-    loadServerCache(options)
     const cache_key = makeCacheKey(framesObject, options)
     let _cache = NAXCSS_CACHE.get(cache_key)
 

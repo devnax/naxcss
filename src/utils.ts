@@ -1,6 +1,4 @@
-import { CSSProps, OptionsProps, CACHE_TYPE } from './types';
-import { NAXCSS_CACHE } from './core'
-
+import { CSSProps, OptionsProps } from './types';
 
 export const uid = (str: string) => {
     var hash = 0, len = str.length;
@@ -44,12 +42,4 @@ export const formatValue = (prop: string, val: any) => {
 
 export const makeCacheKey = <P = {}>(_css: CSSProps<P>, options?: OptionsProps) => {
     return (options?.cachePrefix || "") + JSON.stringify(_css)
-}
-
-export const loadServerCache = (options?: OptionsProps) => {
-    if (typeof window !== 'undefined' && (window as any).NAXCSS_CACHE_SERVER?.cache && Array.isArray((window as any).NAXCSS_CACHE_SERVER.cache)) {
-        const ssr_css: CACHE_TYPE[] = (window as any).NAXCSS_CACHE_SERVER.cache
-        ssr_css.forEach(c => NAXCSS_CACHE.set(makeCacheKey(c.css_raw, options), c))
-        delete (window as any).NAXCSS_CACHE_SERVER;
-    }
 }

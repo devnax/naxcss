@@ -1,6 +1,6 @@
 # naxcss 
 
-The [naxcss](https://www.npmjs.com/package/naxcss) package is a very lightweight css framework. This is a performant and flexible CSS-in-JS library that allows developers to write CSS styles using JavaScript. It provides a way to encapsulate styles within JavaScript components, making it easier to manage and manipulate styles dynamically.
+The [naxcss](https://www.npmjs.com/package/naxcss) package is a very lightweight css in js framework. This is a performant and flexible CSS-in-JS library that allows developers to write CSS styles using JavaScript. It provides a way to encapsulate styles within JavaScript components, making it easier to manage and manipulate styles dynamically.
 
 > If you want to develop you own custom UI library then you can use the [naxui-manager](https://www.npmjs.com/package/naxui-manager)
 
@@ -247,7 +247,6 @@ export default class MyDocument extends Document {
 
    render() {
       let css: any = []
-      let css_cache: any = []
       NAXCSS_CACHE.forEach((c, idx) => {
          css_cache.push(c)
          css.push(<style
@@ -261,13 +260,6 @@ export default class MyDocument extends Document {
          <Html lang="en">
              <Head>
                  {css}
-                 <script
-                     dangerouslySetInnerHTML={{
-                         __html: `
-                           window.NAXCSS_CACHE_SERVER = ${JSON.stringify({ cache: css_cache })};
-                         `,
-                     }} />
-
              </Head>
              <body>
                  <Main />
