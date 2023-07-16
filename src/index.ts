@@ -93,5 +93,5 @@ export const alpha = (color: string, opacity: number) => {
     opacity = opacity > 10 ? 10 : opacity;
     opacity = opacity < 0 ? 0 : opacity;
     opacity = opacity * 10;
-    return `color-mix(in srgb, ${color} ${opacity}%, transparent);`
+    return `color-mix(in srgb, ${color} ${opacity}%, transparent)`
 }
