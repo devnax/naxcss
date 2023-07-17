@@ -1,4 +1,4 @@
-import { CSSProps, OptionsProps } from './types';
+import { CSSProps } from './types';
 
 export const uid = (str: string) => {
     var hash = 0, len = str.length;
@@ -40,6 +40,4 @@ export const formatValue = (prop: string, val: any) => {
     return typeof val === 'number' && !number_val_props.includes(prop) ? `${val}px` : val
 }
 
-export const makeCacheKey = <P = {}>(_css: CSSProps<P>, options?: OptionsProps) => {
-    return (options?.cachePrefix || "") + JSON.stringify(_css)
-}
+export const makeCacheKey = <P = {}>(_css: CSSProps<P>) => JSON.stringify(_css)

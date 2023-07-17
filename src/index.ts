@@ -17,7 +17,7 @@ export const injectStyle = (_css: string, baseClass: string) => {
 }
 
 export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
-    let cache_key = makeCacheKey(_css, options);
+    let cache_key = makeCacheKey(_css);
     let _cache = NAXCSS_CACHE.get(cache_key)
     if (_cache) {
         return options?.return_css ? _cache : _cache.classname
@@ -61,7 +61,7 @@ export const globalCss = <P>(key: string, _gcss: GlobalCSSType<P>, options?: Opt
 }
 
 export const keyframes = (framesObject: keyframesType, options?: OptionsProps) => {
-    const cache_key = makeCacheKey(framesObject, options)
+    const cache_key = makeCacheKey(framesObject)
     let _cache = NAXCSS_CACHE.get(cache_key)
 
     if (_cache) {

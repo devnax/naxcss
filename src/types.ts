@@ -23,7 +23,6 @@ export type getAlisesProps = { [key: string]: any }
 export interface OptionsProps<P = {}> {
    return_css?: boolean;
    classPrefix?: string;
-   cachePrefix?: string;
    breakpoints?: { [key: string]: number };
    aliases?: getAlisesProps;
    getValue?: (value: string | number, prop: string, css: CSSProps) => (string | number);

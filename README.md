@@ -119,9 +119,6 @@ const option = {
    // set you own class prefix
    classPrefix: "css-",
 
-   // the cachePrefix is a prefix for the cache key. every css render has a unique cache key and there add the cachePrefix. If you change the cachePrefix conditionally then another cache will create. 
-   cachePrefix: "",
-
    // You can use it for your responsive breakpoint. you can define your screen size with a name then it will work for your responsive design.
    breakpoints: { 
       xs: 500,
@@ -229,7 +226,7 @@ Every css render there has a cache key so If you want to make a cache key then y
 ```js
 import {makeCacheKey} from 'naxcss'
 
-const cache_key = makeCacheKey({} option),
+const cache_key = makeCacheKey({}),
 ```
 
 
