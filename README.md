@@ -90,7 +90,7 @@ The `keyframes` function accepts an object where the key will be number and the 
 import { css, keyframes } from 'naxcss'
 
 const clsname = keyframes(
-  10: {
+  0: {
    transform: "scale(0)",
    opacity: 0
   },
@@ -172,7 +172,7 @@ const cls = css({}, option)
 
 
 ## Responsive
-How you can wite responsive css. It's very simple to responsive any ui. remember you must need to add breakpoints in the css option. then the key which you add in breakpoint that you can use to responsive.
+It's very simple to responsive any ui. remember you must need to add `breakpoints` in the css option. then the key which you add in `breakpoints` that you can use to responsive.
 
 ```jsx
 import { css } from 'naxcss '
@@ -182,7 +182,6 @@ const App = () => {
       backgroundColor: {
          xs: "red",
          sm: "green",
-         // and so
       },
    })
    return(
@@ -226,7 +225,7 @@ Every css render there has a cache key so If you want to make a cache key then y
 ```js
 import {makeCacheKey} from 'naxcss'
 
-const cache_key = makeCacheKey({}),
+const cache_key = makeCacheKey({...css_object}),
 ```
 
 

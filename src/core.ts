@@ -1,9 +1,9 @@
 import { cssPrefix } from "./prefix"
 import { formatValue, formatProp } from "./utils";
 import { CSSProps, OptionsProps, CACHE_TYPE } from './types';
-
-export const NAXCSS_CACHE = new Map<string, CACHE_TYPE>();
-
+const _global: any = typeof window !== 'undefined' ? window : global;
+_global.NAXCSS_CACHE = _global.NAXCSS_CACHE || new Map<string, CACHE_TYPE>();
+export const NAXCSS_CACHE = _global.NAXCSS_CACHE as Map<string, CACHE_TYPE>
 
 /**
  * this function formate css prop and value and also call alias, getValue, getProps
