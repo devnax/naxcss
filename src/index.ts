@@ -95,3 +95,21 @@ export const alpha = (color: string, opacity: number) => {
     opacity = opacity * 10;
     return `color-mix(in srgb, ${color} ${opacity}%, transparent)`
 }
+
+export type classNamesTypes = { [key: string]: boolean } | string
+export const classNames = (...args: classNamesTypes[]) => {
+    let clss = []
+    for (let item of args) {
+        if (!item) continue;
+        if (typeof item === 'string') {
+            clss.push(item)
+        } else if (!Array.isArray(item) && typeof item === 'object') {
+            for (let k in item) {
+                if (item[k]) {
+                    clss.push(k)
+                }
+            }
+        }
+    }
+    return clss.join(' ')
+}

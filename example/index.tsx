@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { css, globalCss } from '../src'
+import { css, globalCss, classNames } from '../src'
 // import { css } from '@emotion/css'
 
 const parformance = () => {
@@ -108,6 +108,7 @@ const App = () => {
 		height: 200,
 		color: "#fff"
 	}, _options)
+
 
 
 	return (

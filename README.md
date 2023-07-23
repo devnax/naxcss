@@ -14,6 +14,7 @@ The [naxcss](https://www.npmjs.com/package/naxcss) package is a very lightweight
   - [Options](#options)
   - [Responsive](#responsive)
   - [alpha color — `alpha`](#alpha)
+  - [classNames — `classNames`](#classnames)
 - [Caching - `NAXCSS_CACHE`](#naxcss_cache)
   - [Make Cache Key — `makeCacheKey`](#make-cache-key)
 - [Server Side Rendering](#server-side-rendering)
@@ -200,6 +201,15 @@ Simple function to make a hex to alpha color
 import {alpha} from 'naxcss'
 
 const newColor = alpha("#bf2d93", .1)
+```
+
+
+## classNames
+In this function you can merge many class names.
+
+```js
+import {classNames} from 'naxcss'
+const classList = classNames("first", "second", "third", {any: false, active: true})
 ```
 
 
