@@ -96,7 +96,7 @@ export const alpha = (color: string, opacity: number) => {
     return `color-mix(in srgb, ${color} ${opacity}%, transparent)`
 }
 
-export type classNamesTypes = { [key: string]: boolean } | string
+export type classNamesTypes = { [key: string]: boolean } | string | string[]
 export const classNames = (...args: classNamesTypes[]) => {
     let clss = []
     for (let item of args) {
@@ -109,6 +109,8 @@ export const classNames = (...args: classNamesTypes[]) => {
                     clss.push(k)
                 }
             }
+        } else if (Array.isArray(item)) {
+            clss.push(item.join(" "))
         }
     }
     return clss.join(' ')

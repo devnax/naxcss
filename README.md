@@ -209,7 +209,7 @@ In this function you can merge many class names.
 
 ```js
 import {classNames} from 'naxcss'
-const classList = classNames("first", "second", "third", {any: false, active: true})
+const classList = classNames("first", "second", "third", {any: false, active: true}, ["a", "b"])
 ```
 
 
