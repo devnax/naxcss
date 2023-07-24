@@ -27,6 +27,7 @@ export interface OptionsProps<P = {}> {
    aliases?: getAlisesProps;
    getValue?: (value: string | number, prop: string, css: CSSProps) => (string | number);
    getProps?: (prop: string, value: string | number, css: CSSProps) => CSSProps<P> | void;
+   getStyleTag?: (styleTag: HTMLStyleElement) => void;
 }
 
 

@@ -6,13 +6,14 @@ export * from './core'
 export * from './types'
 export * from './utils'
 
-export const injectStyle = (_css: string, baseClass: string) => {
+export const injectStyle = (_css: string, baseClass: string): HTMLStyleElement | void => {
     if (typeof window !== 'undefined' && window.document) {
         if (document.querySelector(`[data-naxcss="${baseClass}"]`)) return;
         const tag = document.createElement("style");
         tag.innerHTML = _css
         tag.setAttribute(`data-naxcss`, baseClass)
         document.head.append(tag)
+        return tag
     }
 }
 
@@ -35,7 +36,10 @@ export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
     if (options?.return_css) {
         return NAXCSS_CACHE.get(cache_key)
     }
-    rendered.length && injectStyle(cssstring, baseClass)
+    if (rendered.length) {
+        const st = injectStyle(cssstring, baseClass);
+        (st && options?.getStyleTag) && options?.getStyleTag(st)
+    }
     return baseClass
 }
 
@@ -57,7 +61,10 @@ export const globalCss = <P>(key: string, _gcss: GlobalCSSType<P>, options?: Opt
     if (options?.return_css) {
         return NAXCSS_CACHE.get(key) as any
     }
-    cssstring && injectStyle(cssstring, key)
+    if (cssstring) {
+        const st = injectStyle(cssstring, key);
+        (st && options?.getStyleTag) && options?.getStyleTag(st)
+    }
 }
 
 export const keyframes = (framesObject: keyframesType, options?: OptionsProps) => {
@@ -84,7 +91,8 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
     if (options?.return_css) {
         return NAXCSS_CACHE.get(cache_key)
     }
-    injectStyle(_css, baseClass);
+    const st = injectStyle(_css, baseClass);
+    (st && options?.getStyleTag) && options?.getStyleTag(st)
     return baseClass
 }
 

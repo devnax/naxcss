@@ -120,6 +120,10 @@ const option = {
    // set you own class prefix
    classPrefix: "css-",
 
+
+   // Defaul the css fucntion return a class name. If you want to get whole css factory the you can set return_css true.
+   return_css: false,
+
    // You can use it for your responsive breakpoint. you can define your screen size with a name then it will work for your responsive design.
    breakpoints: { 
       xs: 500,
@@ -160,10 +164,10 @@ const option = {
       }
    },
 
-
-// Defaul the css fucntion return a class name. If you want to get whole css factory the you can set return_css true.
-   return_css: false
-
+   // You can get the style tag after inject in the browser.
+   getStyleTag: (tag) => {
+      // do somthing
+   }
 }
 
 const cls = css({}, option)
