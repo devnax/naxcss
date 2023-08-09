@@ -85,12 +85,12 @@ globalCss<Type>("any-unique-key", {
 
 ### Animation Keyframes
 
-The `keyframes` function accepts an object where the key will be number and the value will be style object and that returns a class name or css.
+The `keyframes` function accepts an object where the key will be number and the value will be style object and that returns the animation name or css.
 
 ```jsx
 import { css, keyframes } from 'naxcss'
 
-const clsname = keyframes(
+const animationaName = keyframes(
   0: {
    transform: "scale(0)",
    opacity: 0
@@ -101,9 +101,13 @@ const clsname = keyframes(
   }
 )
 
+const className = css({
+   animationName
+})
+
 render(
   <img
-    className={clsname}
+    className={className}
     src={logoUrl}
   />
 )
@@ -119,7 +123,9 @@ import { css } from 'naxcss '
 const option = {
    // set you own class prefix
    classPrefix: "css-",
-
+   
+   // css selector type, default class
+   selectorType: "class" | "id",
 
    // Defaul the css fucntion return a class name. If you want to get whole css factory the you can set return_css true.
    return_css: false,

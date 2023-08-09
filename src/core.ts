@@ -78,6 +78,7 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
         throw new Error(`Invaid css object: ${_css}`);
     }
 
+    let selectorType = options?.selectorType === "id" ? "#" : "."
     let stack: any = []
     let medias: any = {} // {500: [], 800: []}
     let formated_css: any = {}
@@ -96,7 +97,7 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
                     if (!medias[brkpoin_num]) {
                         medias[brkpoin_num] = []
                     }
-                    medias[brkpoin_num].push(`.${baseClass}{${media[brkpoin_num]}}`)
+                    medias[brkpoin_num].push(`${selectorType + baseClass}{${media[brkpoin_num]}}`)
                 }
             } else {
                 formated_css = {
@@ -108,7 +109,7 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
     }
     const values = Object.values(formated_css).join("")
     if (values) {
-        stack.push(`${baseClass ? "." + baseClass : ""}{${Object.values(formated_css).join("")}}`)
+        stack.push(`${baseClass ? selectorType + baseClass : ""}{${Object.values(formated_css).join("")}}`)
     }
 
     const brkpoin_nums = Object.keys(medias).sort((a: any, b: any) => a - b).reverse();
