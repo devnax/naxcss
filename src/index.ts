@@ -100,9 +100,7 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
 
 
 export const alpha = (color: string, opacity: number) => {
-    opacity = opacity > 10 ? 10 : opacity;
-    opacity = opacity < 0 ? 0 : opacity;
-    opacity = opacity * 10;
+    opacity = opacity * 100;
     return `color-mix(in srgb, ${color} ${opacity}%, transparent)`
 }
 

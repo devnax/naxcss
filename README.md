@@ -244,7 +244,6 @@ Every css render there has a cache key so If you want to make a cache key then y
 
 ```js
 import {makeCacheKey} from 'naxcss'
-
 const cache_key = makeCacheKey({...css_object}),
 ```
 
@@ -264,7 +263,6 @@ export default class MyDocument extends Document {
    render() {
       let css: any = []
       NAXCSS_CACHE.forEach((c, idx) => {
-         css_cache.push(c)
          css.push(<style
             key={c.classname + idx}
             data-naxcss={c.classname}
