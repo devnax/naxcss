@@ -77,23 +77,12 @@ const parformance = () => {
 const App = () => {
 
 	const _options = {
-		beforeRender: (prop, val) => {
-			if (prop === 'borderRadius') {
-				return undefined
-			}
-			return val
-		},
 		breakpoints: {
 			sm: 700,
 			md: 900,
 			lg: 1190,
 			xs: 500,
 		},
-		getProps: (p, v) => {
-			if (p === 'type') {
-				return { fontSize: 20, color: "red", background: "green" }
-			}
-		}
 	}
 
 	globalCss<{}>("global", {
@@ -104,9 +93,17 @@ const App = () => {
 	})
 
 	const cls = css<{}>({
-		type: "red",
 		height: 200,
-		color: "#fff"
+		background: "orange",
+		'& p, & div': {
+			color: "yello",
+			"& button, & a": {
+				fontSize: 1,
+				"& span": {
+					border: 0
+				}
+			}
+		}
 	}, _options)
 
 

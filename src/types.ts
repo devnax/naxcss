@@ -22,7 +22,6 @@ export type getAlisesProps = { [key: string]: any }
 
 export interface OptionsProps<P = {}> {
    return_css?: boolean;
-   selectorType?: "class" | "id";
    classPrefix?: string;
    breakpoints?: { [key: string]: number };
    aliases?: getAlisesProps;

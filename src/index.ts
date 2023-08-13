@@ -49,10 +49,10 @@ export const globalCss = <P>(key: string, _gcss: GlobalCSSType<P>, options?: Opt
     if (_cache) {
         return options?.return_css ? _cache : undefined;
     }
-    let selectorType = options?.selectorType === "id" ? "#" : "."
+    let dot = "."
     let cssstring = ""
     for (let key in _gcss) {
-        cssstring += renderCss(_gcss[key], key, options).reverse().join('').replaceAll(selectorType + key, key)
+        cssstring += renderCss(_gcss[key], key, options).reverse().join('').replaceAll(dot + key, key)
     }
     NAXCSS_CACHE.set(key, {
         classname: key,
@@ -75,13 +75,13 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
     if (_cache) {
         return options?.return_css ? _cache : _cache.classname
     }
-    let selectorType = options?.selectorType === "id" ? "#" : "."
+    let dot = "."
     let frames = ""
     const baseClass = (options?.classPrefix || "css-") + uid(cache_key)
     for (let frameKey in framesObject) {
         const generated = renderCss(framesObject[frameKey], baseClass, options).reverse()
         frameKey = typeof frameKey === "number" ? frameKey + "%" : frameKey
-        frames += `${frameKey}${generated[0].replaceAll(selectorType + baseClass, '')}`
+        frames += `${frameKey}${generated[0].replaceAll(dot + baseClass, '')}`
     }
 
     let _css = `@keyframes ${baseClass}{${frames}}`

@@ -123,9 +123,6 @@ import { css } from 'naxcss '
 const option = {
    // set you own class prefix
    classPrefix: "css-",
-   
-   // css selector type, default class
-   selectorType: "class" | "id",
 
    // Defaul the css fucntion return a class name. If you want to get whole css factory the you can set return_css true.
    return_css: false,

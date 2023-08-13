@@ -78,7 +78,7 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
         throw new Error(`Invaid css object: ${_css}`);
     }
 
-    let selectorType = options?.selectorType === "id" ? "#" : "."
+    let dot = "."
     let stack: any = []
     let medias: any = {} // {500: [], 800: []}
     let formated_css: any = {}
@@ -86,9 +86,18 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
     for (let prop in _css as any) {
         let value = (_css as any)[prop]
         if (prop.startsWith("&")) {
+            let _baseClass = baseClass.split(',').map(cls => {
+                cls = cls.trim()
+                // replace first
+                let c = prop.replace('&', cls)
+                // replace all with selector type
+                c = c.replaceAll('&', dot + cls)
+                return c.replaceAll(dot + dot, dot)
+            }).join(',')
+
             stack = [
                 ...stack,
-                ...renderCss(value, prop.replaceAll('&', baseClass), options)
+                ...renderCss(value, _baseClass, options)
             ]
         } else {
             const media = formateBreakPoints(prop, value, _css as any, options)
@@ -97,7 +106,7 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
                     if (!medias[brkpoin_num]) {
                         medias[brkpoin_num] = []
                     }
-                    medias[brkpoin_num].push(`${selectorType + baseClass}{${media[brkpoin_num]}}`)
+                    medias[brkpoin_num].push(`${dot + baseClass}{${media[brkpoin_num]}}`)
                 }
             } else {
                 formated_css = {
@@ -109,7 +118,7 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
     }
     const values = Object.values(formated_css).join("")
     if (values) {
-        stack.push(`${baseClass ? selectorType + baseClass : ""}{${Object.values(formated_css).join("")}}`)
+        stack.push(`${baseClass ? dot + baseClass : ""}{${Object.values(formated_css).join("")}}`)
     }
 
     const brkpoin_nums = Object.keys(medias).sort((a: any, b: any) => a - b).reverse();
