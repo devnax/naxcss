@@ -81,7 +81,7 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
     for (let frameKey in framesObject) {
         const generated = renderCss(framesObject[frameKey], baseClass, options).reverse()
         frameKey = typeof frameKey === "number" ? frameKey + "%" : frameKey
-        frames += `${frameKey}${generated[0].replace(selectorType + baseClass, '')}`
+        frames += `${frameKey}${generated[0].replaceAll(selectorType + baseClass, '')}`
     }
 
     let _css = `@keyframes ${baseClass}{${frames}}`

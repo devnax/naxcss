@@ -88,7 +88,7 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
         if (prop.startsWith("&")) {
             stack = [
                 ...stack,
-                ...renderCss(value, prop.replace('&', baseClass), options)
+                ...renderCss(value, prop.replaceAll('&', baseClass), options)
             ]
         } else {
             const media = formateBreakPoints(prop, value, _css as any, options)
