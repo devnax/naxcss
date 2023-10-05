@@ -167,6 +167,14 @@ const option = {
       }
    },
 
+ // You can skip any prop with this function. If you return true then the prop will skip
+   skipProps: (prop, value) => {
+      // border prop will skip
+      if(prop === 'border'){
+         return true
+      }
+   }
+
    // You can get the style tag after inject in the browser.
    getStyleTag: (tag) => {
       // do somthing

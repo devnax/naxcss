@@ -25,6 +25,7 @@ export interface OptionsProps<P = {}> {
    classPrefix?: string;
    breakpoints?: { [key: string]: number };
    aliases?: getAlisesProps;
+   skipProps?: (prop: string, value: string | number) => boolean;
    getValue?: (value: string | number, prop: string, css: CSSProps) => (string | number);
    getProps?: (prop: string, value: string | number, css: CSSProps) => CSSProps<P> | void;
    getStyleTag?: (styleTag: HTMLStyleElement) => void;

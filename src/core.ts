@@ -85,6 +85,9 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
 
     for (let prop in _css as any) {
         let value = (_css as any)[prop]
+        if (options?.skipProps) {
+            if (options.skipProps(prop, value)) continue;
+        }
         if (prop.startsWith("&")) {
             let _baseClass = baseClass.split(',').map(cls => {
                 cls = cls.trim()
