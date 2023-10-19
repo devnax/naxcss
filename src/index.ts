@@ -77,7 +77,7 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
     }
     let dot = "."
     let frames = ""
-    const baseClass = (options?.classPrefix || "css-") + uid(cache_key)
+    const baseClass = "anim-" + (options?.classPrefix || "") + uid(cache_key)
     for (let frameKey in framesObject) {
         const generated = renderCss(framesObject[frameKey], baseClass, options).reverse()
         frameKey = typeof frameKey === "number" ? frameKey + "%" : frameKey
@@ -95,7 +95,7 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
     }
     const st = injectStyle(_css, baseClass);
     (st && options?.getStyleTag) && options?.getStyleTag(st)
-    return "name-" + baseClass
+    return baseClass
 }
 
 
