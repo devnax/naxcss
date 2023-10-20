@@ -33,7 +33,8 @@ const number_val_props = [
     "flex",
     "order",
     "flexGrow",
-    "flex-grow"
+    "flex-grow",
+    "stroke-dashoffset"
 ]
 
 export const formatValue = (prop: string, val: any) => {
