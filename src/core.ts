@@ -89,6 +89,8 @@ export const renderCss = <P = {}>(_css: CSSProps<P>, baseClass: string, options?
             if (options.skipProps(prop, value)) continue;
         }
         if (prop.startsWith("&")) {
+            prop = prop.replace("$prefix", options?.classPrefix || "")
+
             let _baseClass = baseClass.split(',').map(cls => {
                 cls = cls.trim()
                 // replace first
