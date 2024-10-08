@@ -23,11 +23,9 @@ export const css = <P = {}>(_css: CSSProps<P>, options?: OptionsProps): any => {
     if (_cache) {
         return options?.return_css ? _cache : _cache.classname
     }
-    options = {
-        classPrefix: "css",
-        ...options
-    }
-    const baseClass = options.classPrefix + "-" + uid(cache_key)
+
+    let classPrefix = options?.classPrefix ? options.classPrefix + "-" : ""
+    const baseClass = classPrefix + uid(cache_key)
     const rendered = renderCss(_css, baseClass, options).reverse()
     const cssstring = rendered.join('')
     NAXCSS_CACHE.set(cache_key, {
@@ -80,11 +78,8 @@ export const keyframes = (framesObject: keyframesType, options?: OptionsProps) =
     }
     let dot = "."
     let frames = ""
-    options = {
-        classPrefix: "css",
-        ...options
-    }
-    const baseClass = "anim-" + options.classPrefix + "-" + uid(cache_key)
+    let classPrefix = options?.classPrefix ? options.classPrefix + "-" : ""
+    const baseClass = classPrefix + "anim-" + uid(cache_key)
     for (let frameKey in framesObject) {
         const generated = renderCss(framesObject[frameKey], baseClass, options).reverse()
         frameKey = typeof frameKey === "number" ? frameKey + "%" : frameKey
