@@ -1,315 +1,141 @@
-# naxcss 
+<p align="center">
+  <a href="https://github.com/devnax/makepack" rel="noopener" target="_blank"><img  src="https://raw.githubusercontent.com/devnax/makepack/main/logo.png" alt="Makepack logo"></a>
+</p>
 
-The [naxcss](https://www.npmjs.com/package/naxcss) package is a very lightweight css in js framework. This is a performant and flexible CSS-in-JS library that allows developers to write CSS styles using JavaScript. It provides a way to encapsulate styles within JavaScript components, making it easier to manage and manipulate styles dynamically.
+<h1 align="center">Makepack</h1>
 
-> If you want to develop you own custom UI library then you can use the [naxui-manager](https://www.npmjs.com/package/naxui-manager)
+**MakePack** is a command-line interface (CLI) tool that helps you to quickly set up, build, and manage JavaScript, TypeScript, React, and React-TypeScript libraries for use in npm projects. With just a few simple commands, you can generate your own libraries, start a development server, or build and publish your project to the npm repository.
 
-## Table of Contents
+## Installation
 
-- [Quick Start](#quick-start)
-- API
-  - [Generate Class Names — `css`](#css)
-  - [Global CSS — `globalCss`](#css)
-  - [Animation Keyframes — `keyframes`](#animation-keyframes)
-  - [Options](#options)
-  - [Responsive](#responsive)
-  - [alpha color — `alpha`](#alpha)
-  - [classNames — `classNames`](#classnames)
-- [Caching - `NAXCSS_CACHE`](#naxcss_cache)
-  - [Make Cache Key — `makeCacheKey`](#make-cache-key)
-- [Server Side Rendering](#server-side-rendering)
-- [Typescript](#typescript)
- - [Use Types](#use-types)
-
-## Quick Start
-
-Install the package using npm in your project directory.
+To install **MakePack** globally, run the following command:
 
 ```bash
-npm install --save naxcss 
+npm install -g makepack
 ```
 
-```js
-import { css } from 'naxcss '
+This will allow you to use the `makepack` command anywhere in your terminal.
 
-const box = document.getElementById('box')
-const classname = css({
-   background: "red"
-})
-box.classList.add(classname)
+## Commands
+
+### `create`
+
+The `create` command is used to create a new library project. It initializes the project structure, configures essential files, and sets up the environment for you to start working on your library.
+
+#### Usage
+
+```bash
+makepack create
 ```
 
-## API
+#### Description
 
-### css
+- Creates a new library project by setting up the necessary configurations and boilerplate files.
+  
+This command will guide you through the initial setup for your library.
 
-The `css` function accepts styles as an `object` and `option`, and returns a class name or css.
+---
 
-```tsx
-import { css } from 'naxcss '
+### `serve`
 
-const App = () => {
-   const cls = css<ExtraType>({
-      backgroundColor: 'orange',
-      '&:hover': {
-        color: "red"
-      }
-   })
-   return(
-     <div className={cls} >
-       This has a orange background.
-     </div>
-   )
-}
+The `serve` command starts a development server for your library, providing you with a live-reload environment where you can test and iterate on your library in real-time.
 
+#### Usage
+
+```bash
+makepack serve [options]
 ```
 
-### globalCss
-Globally inject css. The `globalCss` function accepts `key`, styles as an `object`, `option`. The `key` is the identifier for the style tag .
+#### Options
 
-```ts
-import { globalCss } from 'naxcss '
+- `-p, --port <number>`  
+  _Port number_ (optional) (default is `5000`).
+  
+- `-e, --root <file>`  
+  _Root file_ (optional) (default is `serve.jsx` or `serve.tsx`). The entry point for your application. Specify the main JavaScript/TypeScript file to start the server.
 
-globalCss<Type>("any-unique-key", {
-   "body": {
-      background: "red"
-   },
-   "*": {
-      margin: 0,
-      padding: 0,
-      listStyle: "none"
-   }
-}, option)
+#### Description
 
+- Starts a local development server for testing and debugging your library.
+  
+Example:
+
+```bash
+makepack serve --port 4000 --root src/index.ts
 ```
 
-### Animation Keyframes
+---
 
-The `keyframes` function accepts an object where the key will be number and the value will be style object and that returns the animation name or css.
+### `pack`
 
-```jsx
-import { css, keyframes } from 'naxcss'
+The `pack` command is used to build your library and optionally publish it to the npm repository. This command compiles your code into a distributable format and prepares it for sharing with others.
 
-const animationaName = keyframes(
-  0: {
-   transform: "scale(0)",
-   opacity: 0
-  },
-  100: {
-   transform: "scale(1)",
-   opacity: 1
-  }
-)
+#### Usage
 
-const className = css({
-   animationName
-})
-
-render(
-  <img
-    className={className}
-    src={logoUrl}
-  />
-)
+```bash
+makepack pack [options]
 ```
 
+#### Options
 
-## Options
-The `Option` argument a config for your css. you can handle the css compilation and do some more logic.
+- `-e, --entry <file>`  
+  _Entry file or directory_ (default is `src/**/*.{tsx,ts,js,jsx}`).  
+  Specify the entry file or use a glob pattern to select the files to include in your library.
 
-```js
-import { css } from 'naxcss '
+- `-p, --publish`  
+  _Publish the project to the npm repository_ (default is `false`).  
+  Add this flag if you want to publish the library to npm after building it.
 
-const option = {
-   // set you own class prefix
-   classPrefix: "css-",
+#### Description
 
-   // Defaul the css fucntion return a class name. If you want to get whole css factory the you can set return_css true.
-   return_css: false,
+- Builds the project by compiling and bundling your library.
+- Optionally publishes the library to the npm repository.
 
-   // You can use it for your responsive breakpoint. you can define your screen size with a name then it will work for your responsive design.
-   breakpoints: { 
-      xs: 500,
-      sm: 700,
-      md: 900,
-      ...
-    },
+Example:
 
-    // You can add your own css property with the aliases.
-   aliases: {
-      m: (v) => {
-         return {margin: v}
-      },
-      mx: (v) => {
-         return {
-            marginLeft: v,
-            marginRight: v
-         }
-      }
-   };
-
-
-   // The getValue method give you to customize your css value. This method will call when the css value is rendering and you have to return a new value. like the css value is {background: "primary"}
-   getValue: (value, prop, _css) => {
-      if(value === 'primary'){
-         return "your primary color"
-      }
-   },
-
-   // With this method you can use a template with css key or value.
-   getProps: (prop, value, _css) =>{
-      if(value === "h1"){
-         return {
-            fontSize: 44,
-            color: "#333",
-            ...
-         }
-      }
-   },
-
- // You can skip any prop with this function. If you return true then the prop will skip
-   skipProps: (prop, value) => {
-      // border prop will skip
-      if(prop === 'border'){
-         return true
-      }
-   }
-
-   // You can get the style tag after inject in the browser.
-   getStyleTag: (tag) => {
-      // do somthing
-   }
-}
-
-const cls = css({}, option)
-
+```bash
+makepack pack --entry src/index.ts --publish
 ```
 
+This will compile the project from `src/index.ts` and then publish the library to npm.
 
+---
 
-## Responsive
-It's very simple to responsive any ui. remember you must need to add `breakpoints` in the css option. then the key which you add in `breakpoints` that you can use to responsive.
+## Example Workflow
 
-```jsx
-import { css } from 'naxcss '
+1. Create a new project:
 
-const App = () => {
-   const cls = css<ExtraType>({
-      backgroundColor: {
-         xs: "red",
-         sm: "green",
-      },
-   })
-   return(
-     <div className={cls} >
-       Hello world
-     </div>
-   )
-}
-
+```bash
+makepack create
 ```
 
+2. Start the server for development:
 
-## Alpha
-Simple function to make a hex to alpha color
-```js
-import {alpha} from 'naxcss'
-
-const newColor = alpha("#bf2d93", .1)
+```bash
+makepack serve --port 4000 --root index.tsx
 ```
 
+3. Once you're ready to build and publish your library:
 
-## classNames
-In this function you can merge many class names.
-
-```js
-import {classNames} from 'naxcss'
-const classList = classNames("first", "second", "third", {any: false, active: true}, ["a", "b"])
+```bash
+makepack pack --entry src/**/*.{tsx,ts,js,jsx} --publish
 ```
 
+This will build your library and publish it to npm.
 
 
-### NAXCSS_CACHE
-This is a JS Map object where stored all the css cache. the every css render will store a cache in the `NAXCSS_CACHE`. you can use this to read and modify your css. and also you can use this for server side rendering.
-Every css cache has a  `css`  - rendered css string, `classname` - css class name, `raw_css` - css style object.
+## 🤝 Contributing
 
-```js
-import {NAXCSS_CACHE, makeCacheKey} from 'naxcss'
+Contributions are welcome! Please check out the [contribution guidelines](https://github.com/devnax/makepack).
 
-const key = makeCacheKey({background: "red"})
-NAXCSS_CACHE.get(key)
-NAXCSS_CACHE.set()
-...
-```
+---
 
+## 📄 License
 
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
-## makeCacheKey
-Every css render there has a cache key so If you want to make a cache key then you can use this function. this will help you to read the cache from the `NAXCSS_CACHE` factory. for this function there are tow arguments `css` style object and `option`.
+---
 
-```js
-import {makeCacheKey} from 'naxcss'
-const cache_key = makeCacheKey({...css_object}),
-```
+## 📞 Support
 
-
-
-### Server Side Rendering
-How do you render css in server side. 
-for the `NextJs` example you can do this. In your _document root file  you can use for server side rendering.
-
-
-```js
-import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { NAXCSS_CACHE } from 'naxcss'
-
-export default class MyDocument extends Document {
-
-   render() {
-      let css: any = []
-      NAXCSS_CACHE.forEach((c, idx) => {
-         css.push(<style
-            key={c.classname + idx}
-            data-naxcss={c.classname}
-            dangerouslySetInnerHTML={{ __html: c.css }}
-         />)
-      })
-
-      return (
-         <Html lang="en">
-             <Head>
-                 {css}
-             </Head>
-             <body>
-                 <Main />
-                 <NextScript />
-             </body>
-         </Html>
-     );
-   }
-}
-
-
-```
-
-
-
-### Typescript
-For the Typescript, How you can use the type.
-
-```ts
-import {css} from 'naxcss'
-
-type MorePros = {
-   m: string | number;
-   mx: string | number;
-}
-const cls = css<MorePros>({})
-
-```
-
-### Use Types
-
-```ts
-import {CSSProps, CACHE_TYPE, OptionsProps} from 'naxcss'
-```
+For help or suggestions, feel free to open an issue on [GitHub](https://github.com/devnax/makepack/issues) or contact us via [devnaxrul@gmail.com](mailto:devnaxrul@gmail.com).

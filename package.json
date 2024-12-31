@@ -1,67 +1,20 @@
 {
-  "version": "2.5.5",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "description": "The naxcss is a very lightweight css in js framework. This is a performant and flexible CSS-in-JS library that allows developers to write CSS styles using JavaScript",
-  "keywords": [
-    "css",
-    "css in js",
-    "style",
-    "react",
-    "naxcss"
-  ],
-  "engines": {
-    "node": ">=10"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/devnax/naxcss.git"
-  },
-  "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test",
-    "lint": "tsdx lint",
-    "prepare": "tsdx build",
-    "size": "size-limit",
-    "analyze": "size-limit --why"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "name": "naxcss",
-  "author": "Naxrul Ahmed",
-  "module": "dist/naxcss.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/naxcss.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/naxcss.esm.js",
-      "limit": "10 KB"
-    }
-  ],
-  "devDependencies": {
-    "@size-limit/preset-small-lib": "^8.1.0",
-    "husky": "^8.0.2",
-    "size-limit": "^8.1.0",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.4.1",
-    "typescript": "^4.9.5",
-    "csstype": "^3.1.1"
-  }
+   "name": "naxcss",
+   "version": "2.5.5",
+   "description": "",
+   "main": "./index.js",
+   "scripts": {
+      "start": "makepack serve",
+      "pack": "makepack pack",
+      "publish:pack": "makepack pack -p"
+   },
+   "devDependencies": {
+      "@types/react": "^19.0.2",
+      "@types/react-dom": "^19.0.2",
+      "makepack": "latest",
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0",
+      "typescript": "^4.4.2"
+   },
+   "keywords": []
 }
